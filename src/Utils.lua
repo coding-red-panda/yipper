@@ -6,11 +6,11 @@
 Yipper = {}
 Yipper.Utilities = {}
 
--- Checks whether the given table/array contains the specified value.
+-- Checks whether the given table contains the specified value.
 -- Returns true when the value is found; otherwise false.
-function Yipper.Utilities:contains(table, value)
-    for i, v in ipairs(table) do
-        if v == value then
+function Yipper.Utilities:eventSupported(eventsTable, eventName)
+    for i, v in pairs(eventsTable) do
+        if i == eventName then
             return true
         end
     end
@@ -31,4 +31,20 @@ function Yipper.Utilities:getPlayerAndRealm(input)
     end
 
     return input, nil
+end
+
+--[[
+      Simple function to dump objects to string
+--]]
+function Yipper.Utilities:dump(o)
+    if type(o) == 'table' then
+        local s = '{ '
+        for k,v in pairs(o) do
+            if type(k) ~= 'number' then k = '"'..k..'"' end
+            s = s .. '['..k..'] = ' .. Yipper.Utilities:dump(v) .. ','
+        end
+        return s .. '} '
+    else
+        return tostring(o)
+    end
 end

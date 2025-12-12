@@ -3,38 +3,40 @@
     To ensure that we do not pollute other AddOns, or others pollute
     our AddOn, we will isolate our constants to a namespace.
 ]]--
+Yipper.LastActivity = time()
 Yipper.Constants = { }
 Yipper.Constants.MaxMessage = 50
 
 -- The message events we care about
+-- Stored as eventName - Function
 Yipper.Constants.MessageEvents = {
     -- Standard Chat
-    "CHAT_MSG_SAY",
-    "CHAT_MSG_EMOTE",
-    "CHAT_MSG_TEXT_EMOTE",
-    "CHAT_MSG_YELL",
+    ["CHAT_MSG_SAY"] = "OnChatMessage",
+    ["CHAT_MSG_EMOTE"] = "OnCustomEmoteMessage",
+    ["CHAT_MSG_TEXT_EMOTE"] = "OnEmoteMessage",
+    ["CHAT_MSG_YELL"] = "OnYellMessage",
     -- Whispers
-    "CHAT_MSG_WHISPER",
-    "CHAT_MSG_WHISPER_INFORM",
+    ["CHAT_MSG_WHISPER"] = "OnReceiveWhisper",
+    ["CHAT_MSG_WHISPER_INFORM"] = "OnSendWhisper",
     -- Party Chat
-    "CHAT_MSG_PARTY",
-    "CHAT_MSG_PARTY_LEADER",
+    ["CHAT_MSG_PARTY"] = "OnPartyMessage",
+    ["CHAT_MSG_PARTY_LEADER"] = "OnPartyLeaderMessage",
     -- Raid Chat
-    "CHAT_MSG_RAID",
-    "CHAT_MSG_RAID_LEADER",
-    "CHAT_MSG_RAID_WARNING",
+    ["CHAT_MSG_RAID"] = "OnRaidMessage",
+    ["CHAT_MSG_RAID_LEADER"] = "OnRaidLeaderMessage",
+    ["CHAT_MSG_RAID_WARNING"] = "OnRaidWarningMessage",
     -- Guild Chat
-    "CHAT_MSG_GUILD",
-    "CHAT_MSG_OFFICER",
+    ["CHAT_MSG_GUILD"] = "OnGuildMessage",
+    ["CHAT_MSG_OFFICER"] = "OnOfficerMessage"
     -- Channels
     -- "CHAT_MSG_CHANNEL", -- We don't care about trade/service channel spam really.
     -- "CHAT_MSG_CHANNEL_JOIN", -- triggered when someone joins a channel we're in, not important for now.
     -- "CHAT_MSG_CHANNEL_LEAVE", -- triggered when someone leaves a channel we're in, not important for now.
     -- Instance Chat
-    "CHAT_MSG_INSTANCE_CHAT",
-    "CHAT_MSG_INSTANCE_CHAT_LEADER",
+    -- "CHAT_MSG_INSTANCE_CHAT", -- Triggered when instance chat messages happen
+    -- "CHAT_MSG_INSTANCE_CHAT_LEADER", -- Triggered when instance leader messages happen
     -- Communities Chat
-    "CHAT_MSG_COMMUNITIES_CHANNEL"
+    -- "CHAT_MSG_COMMUNITIES_CHANNEL" -- Triggered when community message happens
 }
 
 --[[
