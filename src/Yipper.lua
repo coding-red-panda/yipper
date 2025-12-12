@@ -3,7 +3,26 @@
 --
 -- Create the Frame for Yipper so we can listen to events and display stuff
 --
-local frame = CreateFrame("Frame")
+local frame = CreateFrame("Frame", "Yipper", ParentUI, "BackdropTemplate")
+frame:SetSize(200, 400)
+frame:SetPoint("CENTER")
+frame:SetBackdrop({
+    bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+    edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
+    edgeSize = 1
+})
+frame:SetBackdropColor(0, 0, 0, 0.5)
+frame:SetBackdropBorderColor(0, 0, 0)
+frame:EnableMouse(true)
+frame:SetMovable(true)
+frame:RegisterForDrag("LeftButton")
+frame:SetScript("OnDragStart", frame.StartMoving)
+frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+frame:SetScript("OnHide", frame.StopMovingOrSizing)
+
+local closeButton = CreateFrame("Button", "YipperCloseButton", frame, "UIPanelCloseButton")
+closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT")
+closeButton:SetScript("OnClick", function() frame:Hide()  end)
 
 --
 -- Define the function to handle the event handling
