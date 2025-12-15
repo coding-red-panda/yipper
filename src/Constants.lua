@@ -4,6 +4,7 @@
     our AddOn, we will isolate our constants to a namespace.
 ]]--
 Yipper.LastActivity = time()
+Yipper.TrackedPlayer = nil
 Yipper.Constants = { }
 Yipper.Constants.MaxMessage = 50
 
