@@ -1,29 +1,15 @@
-﻿--[[
-    Utilities to simplify certain operations that do not exist in Lua by default.
-    See the documentation above each function to determine what it does.
---]]
+﻿-- Yipper - Utilities
+--
+-- This section defines special methods that can be called to handle miscellaneous operations inside
+-- the AddOn. These methods are part of the Util namespace of our AddOn.
+local _, addonTable = ...
+local Util = { }
+addonTable.Util = Util
 
-Yipper = {}
-Yipper.Utilities = {}
-
--- Checks whether the given table contains the specified value.
--- Returns true when the value is found; otherwise false.
-function Yipper.Utilities:eventSupported(eventsTable, eventName)
-    for i, v in pairs(eventsTable) do
-        if i == eventName then
-            return true
-        end
-    end
-
-    return false
-end
-
---[[
-    Splits the given string on the "-" separator and returns the player and realm
-    as separate values to be used in the code.
-    This accounts for the input not having the Realm appended to the value.
---]]
-function Yipper.Utilities:getPlayerAndRealm(input)
+-- Extracts the player's name and realm from the provided string the AddOn code gives us.
+-- The expected format is <PlayerName>-<RealmName>.
+-- In case we just receive the player's name, we return the player's name as is.
+function Util:getPlayerAndRealm(input)
     local player, realm = input:match("^(.-)%-(.-)$")
 
     if player then
@@ -33,15 +19,14 @@ function Yipper.Utilities:getPlayerAndRealm(input)
     return input, nil
 end
 
---[[
-      Simple function to dump objects to string
---]]
-function Yipper.Utilities:dump(o)
+-- Debug method for dumping a table to a readable string.
+-- Used for outputting data to verify information.
+function Util:dump(o)
     if type(o) == 'table' then
         local s = '{ '
         for k,v in pairs(o) do
             if type(k) ~= 'number' then k = '"'..k..'"' end
-            s = s .. '['..k..'] = ' .. Yipper.Utilities:dump(v) .. ','
+            s = s .. '['..k..'] = ' .. self:dump(v) .. ','
         end
         return s .. '} '
     else

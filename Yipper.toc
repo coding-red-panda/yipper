@@ -4,6 +4,9 @@
 ## Notes: AddOn to track chat messages from players
 ## Author: Keento
 
+src\Core.lua
+src\Data.lua
 src\Utils.lua
-src\Constants.lua
+src\Event.lua
+src\UI.lua
 src\Yipper.lua
