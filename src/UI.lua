@@ -55,6 +55,7 @@ function UI:AddResizeHandler()
 
     -- Set the required behavior for when the mouse is pressed/released on our handle,
     -- triggering or stopping the resize behavior of the parent.
+    -- Function takes caller as argument, which is the self, or the button in this case.
     -- TODO: Add logic for storing position and size when resizing ends
     handle:SetScript("OnMouseDown", function(self) self:GetParent():StartSizing("BOTTOMRIGHT") end)
     handle:SetScript("OnMouseUp", function(self) self:GetParent():StopMovingOrSizing("BOTTOMRIGHT") end)
@@ -69,8 +70,9 @@ function UI:AddCloseButton()
     self.closeButton:SetSize(16, 16) -- TODO: Load/Store in database.
 
     -- Set the required behavior for when the button is clicked,
-    -- closing the parent frame.
-    self.closeButton:SetScript("OnClick", function() self:GetParent():Hide()  end)
+    -- closing the parent frame. Function takes caller as argument,
+    -- which is the self, or the button in this case.
+    self.closeButton:SetScript("OnClick", function(self) self:GetParent():Hide()  end)
 end
 
 -- Builds and configure the player tracking frame to display who's messages are
