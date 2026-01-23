@@ -23,7 +23,6 @@ function Yipper:OnEvent(event, ...)
     local name = ...
 
     if (event == "ADDON_LOADED" and addonName == name) then
-    if (event == "ADDON_LOADED" and addonName == name) then
         -- If the YipperDB is nil, it means this is the first time loading
         -- the Addon. In that case, assign the default values for the AddOn
         -- to the DB.
@@ -74,4 +73,4 @@ function Yipper:OnEvent(event, ...)
     end
 end
 
-Yipper.mainFrame:SetScript("OnEvent", function(self, event, ...) Yipper:OnEvent(event, ...) end)
+Yipper.mainFrame:SetScript("OnEvent", function(self, event, ...) Yipper:OnEvent(event, ...); end)

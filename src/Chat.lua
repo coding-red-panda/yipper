@@ -4,11 +4,6 @@ Yipper.Chat = {}
 
 --- Initialises the Chat module and registers the required events
 function Yipper.Chat:Init()
-    if not Yipper.Constants or not Yipper.Constants.ChatEvents then
-        print("Yipper Error: Constants not loaded")
-        return
-    end
-
     for _, event in pairs(Yipper.Constants.ChatEvents) do
         Yipper.mainFrame:RegisterEvent(event)
     end
