@@ -1,115 +1,143 @@
 ﻿-- Yipper - UI
 --
--- This section defines everything related to the UI of the AddOn and is responsible for defining
--- the functions needed to build and handle the UI as well as the event-handling to react on the correct
--- situations.
-local _, addonTable = ...
-local UI = { }
-addonTable.UI = UI
+-- This file is responsible for registering the entire UI of Yipper.
+-- The code will build up the required interface for the main window
+-- and make sure it can be displayed.
+local addonName, Yipper = ...
+local backdropConfiguration = {
+    bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
+    edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
+    edgeSize = 16,
+    insets = { left = 4, right = 3, top = 4, bottom = 3 }
+}
 
--- Init
+-- Initialize the Yipper.UI module before defining the functions
+Yipper.UI = { }
+
+-- Constructs the mainframe using the mainFrame already registered in Yipper.
+-- Requires Yipper to be initialized so the calling code does not trigger any
+-- errors.
+function Yipper.UI:Init()
+    print("Yipper UI Init")
+
+    -- Apply the required Mixin to our frame so we have access to the
+    -- needed functions.
+    Mixin(Yipper.mainFrame, BackdropTemplateMixin)
+
+    -- Configure the frame
+    Yipper.mainFrame:SetSize(200, 150)
+    Yipper.mainFrame:SetBackdrop(backdropConfiguration)
+    Yipper.mainFrame:SetBackdropColor(0, 0, 0)
+    Yipper.mainFrame:SetBackdropBorderColor(0.4, 0.4, 0.4)
+
+    -- Add behavior to our frame
+    -- Make it movable
+    Yipper.mainFrame:SetMovable(true)
+    Yipper.mainFrame:EnableMouse(true)
+    Yipper.mainFrame:RegisterForDrag("LeftButton")
+    Yipper.mainFrame:SetScript("OnDragStart", function(self)
+        self:StartMoving()
+    end)
+    Yipper.mainFrame:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Yipper.UI:SavePosition()  -- Save after moving
+    end)
+
+    -- Make it resizable
+    Yipper.mainFrame:SetResizable(true)
+    Yipper.mainFrame:SetResizeBounds(200, 150, 800, 600)  -- minWidth, minHeight, maxWidth, maxHeight
+
+    -- Create close button (top-right corner)
+    local closeButton = CreateFrame("Button", nil, Yipper.mainFrame, "UIPanelCloseButton")
+
+    closeButton:SetPoint("TOPRIGHT", Yipper.mainFrame, "TOPRIGHT", -2, -2)
+    closeButton:SetSize(20, 20)
+    closeButton:SetScript("OnClick", function()
+        Yipper.mainFrame:Hide()
+    end)
+
+    -- Create scroll frame
+    local scrollFrame = CreateFrame("ScrollFrame", nil, Yipper.mainFrame, "UIPanelScrollFrameTemplate")
+
+    scrollFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 0, -22)  -- Leave space for close button
+    scrollFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -23, 20)  -- Leave space for scrollbar and resize grip
+
+    -- Create scroll child (content container)
+    local scrollChild = CreateFrame("Frame", nil, scrollFrame)
+
+    scrollChild:SetSize(scrollFrame:GetWidth(), 1)  -- Height will grow with content
+    scrollFrame:SetScrollChild(scrollChild)
+
+    -- Make the scrollbar thinner
+    local scrollBar = scrollFrame.ScrollBar
+
+    if scrollBar then
+        scrollBar:SetWidth(12)  -- Make it thin (default is ~18)
+    end
+
+    -- Store references for later use
+    Yipper.scrollFrame = scrollFrame
+    Yipper.scrollChild = scrollChild
+
+    -- Create resize button (bottom-right corner)
+    local resizeButton = CreateFrame("Button", nil, Yipper.mainFrame)
+    resizeButton:SetSize(16, 16)
+    resizeButton:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -2, 2)
+    resizeButton:EnableMouse(true)
+    resizeButton:RegisterForDrag("LeftButton")
+
+    -- Visual indicator for resize handle
+    resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+    resizeButton:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    resizeButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    resizeButton:SetScript("OnDragStart", function(self)
+        Yipper.mainFrame:StartSizing("BOTTOMRIGHT")
+    end)
+    resizeButton:SetScript("OnDragStop", function(self)
+        Yipper.mainFrame:StopMovingOrSizing()
+        Yipper.UI:SavePosition()  -- Save after resizing
+    end)
+
+    -- Restore saved position/size or use defaults
+    Yipper.UI:RestorePosition()
+
+    -- Make the frame visible for now
+    Yipper.mainFrame:Show()
+end
+
+-- Yipper.UI - SavePosition
 --
--- Takes the parent Frame that wraps the entire AddOn and builds the required UI components.
--- Once the UI components have been initialized, the respective events and handlers will be
--- registered on each component to control the behavior of the AddOn.
-function UI:Init(parentFrame)
-    self.parentFrame = parentFrame -- track the reference to the parentFrame.
+-- Stores the reference point of the mainFrame, as well as its dimensions
+-- inside the Yipper.DB so the game can save these values on exit.
+function Yipper.UI:SavePosition()
+    local point, _, relativePoint, xOfs, yOfs = Yipper.mainFrame:GetPoint()
+    local width, height = Yipper.mainFrame:GetSize()
 
-    self:ConfigureParentFrame()
-    self:AddResizeHandler()
-    self:AddCloseButton()
-    self:AddPlayerTracking()
-    self:RegisterEvents()
+    Yipper.DB.framePosition = {
+        point = point,
+        relativePoint = relativePoint,
+        xOfs = xOfs,
+        yOfs = yOfs,
+        width = width,
+        height = height
+    }
 end
 
--- Configures the parent frame, ensuring the required properties and event handlers
--- are registered for the AddOn.
-function UI:ConfigureParentFrame()
-    self.parentFrame:SetSize(200, 400) -- TODO: Load/Store to database
-    self.parentFrame:SetPoint("CENTER")
-    self.parentFrame:SetBackdrop(Yipper.DefaultData.BackdropInfo)
-    self.parentFrame:SetBackdropBorderColor(1, 1, 1, 1) -- white, 100% alpha
-    self.parentFrame:SetBackdropColor(0, 0, 0, 1) -- black, 100% alpha
-    self.parentFrame:EnableMouse(true)
-    self.parentFrame:SetMovable(true)
-    self.parentFrame:SetResizable(true)
-    self.parentFrame:RegisterForDrag("LeftButton")
+-- Yipper.UI - RestorePosition
+--
+-- Loads the relative point of the mainFrame, as well as its dimensions
+-- from the Yipper.DB and applies them to the mainFrame when loaded.
+function Yipper.UI:RestorePosition()
+    local pos = Yipper.DB.framePosition
 
-    -- Register the required events to allow the parent frame to be moved.
-    self.parentFrame:SetScript("OnDragStart", self.parentFrame.StartMoving)
-    self.parentFrame:SetScript("OnDragStop", self.parentFrame.StopMovingOrSizing)
-    self.parentFrame:SetScript("OnHide", self.parentFrame.StopMovingOrSizing)
-end
-
--- Builds and configure the resize handler for the parent frame,
--- allowing the user to resize the window to the desired size.
-function UI:AddResizeHandler()
-    local handle = CreateFrame("Button", nil, self.parentFrame)
-
-    handle:EnableMouse(true)
-    handle:SetPoint("BOTTOMRIGHT")
-    handle:SetSize(16, 16)
-    handle:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-    handle:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-    handle:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-
-    -- Set the required behavior for when the mouse is pressed/released on our handle,
-    -- triggering or stopping the resize behavior of the parent.
-    -- Function takes caller as argument, which is the self, or the button in this case.
-    -- TODO: Add logic for storing position and size when resizing ends
-    handle:SetScript("OnMouseDown", function(self) self:GetParent():StartSizing("BOTTOMRIGHT") end)
-    handle:SetScript("OnMouseUp", function(self) self:GetParent():StopMovingOrSizing("BOTTOMRIGHT") end)
-end
-
--- Builds and configure the close button for the parent frame,
--- allowing the user to close the window when it is no longer required.
-function UI:AddCloseButton()
-    self.closeButton = CreateFrame("Button", "YipperCloseButton", self.parentFrame, "UIPanelCloseButton")
-
-    self.closeButton:SetPoint("TOPRIGHT", self.parentFrame, "TOPRIGHT")
-    self.closeButton:SetSize(16, 16) -- TODO: Load/Store in database.
-
-    -- Set the required behavior for when the button is clicked,
-    -- closing the parent frame. Function takes caller as argument,
-    -- which is the self, or the button in this case.
-    self.closeButton:SetScript("OnClick", function(self) self:GetParent():Hide()  end)
-end
-
--- Builds and configure the player tracking frame to display who's messages are
--- currently being displayed by the AddOn.
-function UI:AddPlayerTracking()
-    self.playerFrame = CreateFrame("Frame", "YipperPlayerTracking", self.parentFrame, BackdropTemplateMixin and "BackdropTemplate")
-
-    self.playerFrame:SetSize(self.parentFrame:GetWidth() - self.closeButton:GetWidth() - 1, self.closeButton:GetHeight() - 1)
-    self.playerFrame:SetPoint("TOPLEFT", 1, -1)
-    self.playerFrame:SetBackdrop(Yipper.DefaultData.BackdropInfo)
-    self.playerFrame:SetBackdropColor(0,0,0,1)
-    self.playerFrame:SetBackdropBorderColor(0,0,0,0) -- No Border
-
-    self.playerFrame.text = self.playerFrame:CreateFontString("YipperTrackedPlayer", "ARTWORK", "ChatFontNormal")
-    self.playerFrame.text:SetPoint("TOPLEFT", 5, -5) -- Position the header text within the frame
-    self.playerFrame.text:SetTextColor(1, 1, 1, 1) -- Set the text color
-    self.playerFrame.text:SetTextHeight(12)
-end
-
--- Registers all important events that the AddOn cares about and adds the global
--- event handler to the parentFrame to process events.
-function UI:RegisterEvents()
-    self.parentFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    self.parentFrame:RegisterEvent("CHAT_MSG_SAY")
-    self.parentFrame:RegisterEvent("CHAT_MSG_EMOTE")
-    self.parentFrame:RegisterEvent("CHAT_MSG_TEXT_EMOTE")
-    self.parentFrame:RegisterEvent("CHAT_MSG_YELL")
-    self.parentFrame:RegisterEvent("CHAT_MSG_WHISPER")
-    self.parentFrame:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-    self.parentFrame:RegisterEvent("CHAT_MSG_PARTY")
-    self.parentFrame:RegisterEvent("CHAT_MSG_PARTY_LEADER")
-    self.parentFrame:RegisterEvent("CHAT_MSG_RAID")
-    self.parentFrame:RegisterEvent("CHAT_MSG_RAID_LEADER")
-    self.parentFrame:RegisterEvent("CHAT_MSG_RAID_WARNING")
-    self.parentFrame:RegisterEvent("CHAT_MSG_GUILD")
-    self.parentFrame:RegisterEvent("CHAT_MSG_OFFICER")
-
-    -- Register the event handler responsible for dealing with all events.
-    self.parentFrame:SetScript("OnEvent", Yipper.Events.OnEvent)
+    if pos then
+        -- Restore saved position and size
+        Yipper.mainFrame:ClearAllPoints()
+        Yipper.mainFrame:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
+        Yipper.mainFrame:SetSize(pos.width, pos.height)
+    else
+        -- Use default position and size
+        Yipper.mainFrame:SetSize(300, 200)
+        Yipper.mainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    end
 end
