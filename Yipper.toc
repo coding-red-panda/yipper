@@ -6,4 +6,5 @@
 ## SavedVariablesPerCharacter: YipperDB
 
 src/UI.lua
+src/Chat.lua
 src/Core.lua

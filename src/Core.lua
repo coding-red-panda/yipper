@@ -52,8 +52,23 @@ function Yipper:OnEvent(event, ...)
             print("Initializing Yipper Minimap button")
             Yipper.Minimap:Init()
         end
+
+        -- If the Yipper Chat is available, initialize it
+        if Yipper.Chat then
+            print("Initializing Yipper Chat...")
+            Yipper.Chat:Init()
+        end
     elseif event == "PLAYER_LOGOUT" then
         YipperDB = Yipper.DB
+    elseif (event == "CHAT_MSG_EMOTE" or
+            event == "CHAT_MSG_GUILD" or
+            event == "CHAT_MSG_PARTY" or
+            event == "CHAT_MSG_PARTY_LEADER" or
+            event == "CHAT_MSG_RAID" or
+            event == "CHAT_MSG_YELL") then
+        if Yipper.Chat then
+            Yipper.Chat:OnEvent(event, ...)
+        end
     end
 end
 
