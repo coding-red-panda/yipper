@@ -4,14 +4,14 @@ Yipper.Chat = {}
 
 --- Initialises the Chat module and registers the required events
 function Yipper.Chat:Init()
-    print("Yipper Chat Init")
-    
-    Yipper.mainFrame:RegisterEvent("CHAT_MSG_EMOTE")
-    Yipper.mainFrame:RegisterEvent("CHAT_MSG_GUILD")
-    Yipper.mainFrame:RegisterEvent("CHAT_MSG_PARTY")
-    Yipper.mainFrame:RegisterEvent("CHAT_MSG_PARTY_LEADER")
-    Yipper.mainFrame:RegisterEvent("CHAT_MSG_RAID")
-    Yipper.mainFrame:RegisterEvent("CHAT_MSG_YELL")
+    if not Yipper.Constants or not Yipper.Constants.ChatEvents then
+        print("Yipper Error: Constants not loaded")
+        return
+    end
+
+    for _, event in pairs(Yipper.Constants.ChatEvents) do
+        Yipper.mainFrame:RegisterEvent(event)
+    end
 end
 
 --- Handles the incoming chat events

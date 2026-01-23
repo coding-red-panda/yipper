@@ -18,8 +18,6 @@ Yipper.UI = { }
 -- Requires Yipper to be initialized so the calling code does not trigger any
 -- errors.
 function Yipper.UI:Init()
-    print("Yipper UI Init")
-
     -- Apply the required Mixin to our frame so we have access to the
     -- needed functions.
     Mixin(Yipper.mainFrame, BackdropTemplateMixin)

@@ -5,6 +5,7 @@
 ## Author: Keento
 ## SavedVariablesPerCharacter: YipperDB
 
+src/Constants.lua
 src/UI.lua
 src/Chat.lua
 src/Core.lua
