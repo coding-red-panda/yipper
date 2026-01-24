@@ -6,11 +6,16 @@
 --- invoke the code as needed.
 
 local addonName, Yipper = ...
+
+-- Create a frame to hook events on and act as our core anchor.
 Yipper.mainFrame = CreateFrame("Frame", nil, UIParent)
 
 -- Register the events we care about for now
 Yipper.mainFrame:RegisterEvent("ADDON_LOADED")
 Yipper.mainFrame:RegisterEvent("PLAYER_LOGOUT")
+
+-- Initialize the core properties of our AddOn.
+Yipper.Messages = { }
 
 -- Yipper - OnEvent
 --
@@ -28,6 +33,7 @@ function Yipper:OnEvent(event, ...)
         -- to the DB.
         if YipperDB == nil then
             Yipper.DB = {
+                ["Messages"] = {},
                 ["MaxMessages"] = 50
             }
         end
@@ -50,11 +56,13 @@ function Yipper:OnEvent(event, ...)
         end
 
         -- If the Yipper Chat is available, initialize it
-        if Yipper.Chat then
-            Yipper.Chat:Init()
+        if Yipper.Events then
+            Yipper.Events:Init()
         end
     elseif event == "PLAYER_LOGOUT" then
         YipperDB = Yipper.DB
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        Yipper.Events:UpdateTrackedPlayer()
     else
         -- Check if it is a chat event
         local isChatEvent = false
@@ -67,8 +75,8 @@ function Yipper:OnEvent(event, ...)
             end
         end
 
-        if isChatEvent and Yipper.Chat then
-            Yipper.Chat:OnEvent(event, ...)
+        if isChatEvent and Yipper.Events then
+            Yipper.Events:OnEvent(event, ...)
         end
     end
 end

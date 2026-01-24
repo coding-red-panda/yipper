@@ -7,5 +7,5 @@
 
 src/Constants.lua
 src/UI.lua
-src/Chat.lua
+src/Events.lua
 src/Core.lua

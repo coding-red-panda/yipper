@@ -54,10 +54,32 @@ function Yipper.UI:Init()
         Yipper.mainFrame:Hide()
     end)
 
+    -- Header (tracks Yipper.TrackedPlayer)
+    local headerHeight = 30
+    local headerRightInset = 45 -- keeps text clear of close button and the scrollbar gutter
+
+    local headerFrame = CreateFrame("Frame", nil, Yipper.mainFrame)
+    headerFrame:SetHeight(headerHeight)
+    headerFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 6, -4)
+    headerFrame:SetPoint("TOPRIGHT", Yipper.mainFrame, "TOPRIGHT", -headerRightInset, -4)
+
+    local headerText = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    headerText:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", 0, 0)
+    headerText:SetPoint("BOTTOMRIGHT", headerFrame, "BOTTOMRIGHT", 0, 0)
+    headerText:SetJustifyH("LEFT")
+    headerText:SetJustifyV("MIDDLE")
+
+    headerFrame:SetScript("OnShow", function()
+        Yipper.UI:UpdateHeaderText()
+    end)
+    headerFrame:SetScript("OnUpdate", function(self, elapsed)
+        Yipper.UI:UpdateHeaderText()
+    end)
+
     -- Create scroll frame
     local scrollFrame = CreateFrame("ScrollFrame", nil, Yipper.mainFrame, "UIPanelScrollFrameTemplate")
 
-    scrollFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 0, -22)  -- Leave space for close button
+    scrollFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 0, -(headerHeight + 6))  -- Leave space for header
     scrollFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -23, 20)  -- Leave space for scrollbar and resize grip
 
     -- Create scroll child (content container)
@@ -76,6 +98,8 @@ function Yipper.UI:Init()
     -- Store references for later use
     Yipper.scrollFrame = scrollFrame
     Yipper.scrollChild = scrollChild
+    Yipper.headerFrame = headerFrame
+    Yipper.headerText = headerText
 
     -- Create resize button (bottom-right corner)
     local resizeButton = CreateFrame("Button", nil, Yipper.mainFrame)
@@ -137,5 +161,17 @@ function Yipper.UI:RestorePosition()
         -- Use default position and size
         Yipper.mainFrame:SetSize(300, 200)
         Yipper.mainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    end
+end
+
+-- Updates the text display of the header frame
+-- Trigger on update and uses the value of the `TrackedPlayer` field.
+function Yipper.UI:UpdateHeaderText()
+    local tracked = Yipper.TrackedPlayer
+
+    if tracked and tracked ~= "" then
+        Yipper.headerText:SetText("Tracking: " .. tracked)
+    else
+        Yipper.headerText:SetText("Tracking: (none)")
     end
 end
