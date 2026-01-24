@@ -11,6 +11,19 @@ function Yipper.Events:Init()
     -- Register the target changed event, so we can update
     -- our tracked player
     Yipper.mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+
+    -- Register the event for hovering over units,
+    -- so we can update the tracked player from hovering
+    Yipper.mainFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+
+    -- Set up a timer that will trigger our tracking update
+    -- This helps us in checking whether the mouse has actually
+    -- left the unit as well.
+    if not self._trackedPlayerTicker then
+        self._trackedPlayerTicker = C_Timer.NewTicker(0.1, function()
+            self:UpdateTrackedPlayer()
+        end)
+    end
 end
 
 --- Handles the incoming chat events
@@ -57,8 +70,15 @@ function Yipper.Events:StoreMessage(message, sender, lineId, guid, event)
     end
 end
 
+-- Updates the tracked player based on the following order:
+--- 1. Are we hovering over someone with the the mouse?
+--- 2. Do we have someone selected?
+--- 3. Set to nil in all other cases.
 function Yipper.Events:UpdateTrackedPlayer()
-    if UnitName("target") ~= nil and UnitIsPlayer("target") then
+    if UnitName("mouseover") ~= nil and UnitIsPlayer("mouseover") then
+        local name, realm = UnitName("mouseover")
+        Yipper.TrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
+    elseif UnitName("target") ~= nil and UnitIsPlayer("target") then
         local name, realm = UnitName("target")
         Yipper.TrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
     else

@@ -63,6 +63,8 @@ function Yipper:OnEvent(event, ...)
         YipperDB = Yipper.DB
     elseif event == "PLAYER_TARGET_CHANGED" then
         Yipper.Events:UpdateTrackedPlayer()
+    elseif event == "UPDATE_MOUSEOVER_UNIT" then
+        Yipper.Events:UpdateTrackedPlayer()
     else
         -- Check if it is a chat event
         local isChatEvent = false
