@@ -8,14 +8,6 @@ function Yipper.Events:Init()
         Yipper.mainFrame:RegisterEvent(event)
     end
 
-    -- Register the target changed event, so we can update
-    -- our tracked player
-    Yipper.mainFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-
-    -- Register the event for hovering over units,
-    -- so we can update the tracked player from hovering
-    Yipper.mainFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
-
     -- Set up a timer that will trigger our tracking update
     -- This helps us in checking whether the mouse has actually
     -- left the unit as well.
