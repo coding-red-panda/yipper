@@ -183,7 +183,10 @@ end
 -- Updates the displayed text in the mainFrame,
 -- using the data stored in the AddOn.
 function Yipper.UI:UpdateDisplayedText()
-    if Yipper.TrackedPlayer == nil then
+    -- Return if there's no player tracked,
+    -- or there's no messages for the player
+    if Yipper.TrackedPlayer == nil or
+        Yipper.DB.Messages[Yipper.TrackedPlayer] == nil then
         return
     end
 
