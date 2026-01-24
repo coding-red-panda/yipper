@@ -75,5 +75,6 @@ function Yipper.Events:UpdateTrackedPlayer()
         Yipper.TrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
     else
         Yipper.TrackedPlayer = nil
+        Yipper.messageFrame:Clear()
     end
 end

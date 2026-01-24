@@ -45,6 +45,12 @@ function Yipper.UI:Init()
     Yipper.mainFrame:SetResizable(true)
     Yipper.mainFrame:SetResizeBounds(200, 150, 800, 600)  -- minWidth, minHeight, maxWidth, maxHeight
 
+    -- Register the OnUpdate callback to display the text we have been tracking.
+    -- That allows us to instantly change the text when the target changes and the
+    -- UI is refreshed.
+    Yipper.mainFrame:SetScript("OnUpdate", function() Yipper.UI:UpdateDisplayedText() end)
+    Yipper.mainFrame:SetScript("OnShow", function() Yipper.UI:UpdateDisplayedText() end)
+
     -- Create close button (top-right corner)
     local closeButton = CreateFrame("Button", nil, Yipper.mainFrame, "UIPanelCloseButton")
 
@@ -72,32 +78,30 @@ function Yipper.UI:Init()
     headerFrame:SetScript("OnShow", function()
         Yipper.UI:UpdateHeaderText()
     end)
-    headerFrame:SetScript("OnUpdate", function(self, elapsed)
+    headerFrame:SetScript("OnUpdate", function()
         Yipper.UI:UpdateHeaderText()
     end)
 
     -- Create scroll frame
-    local scrollFrame = CreateFrame("ScrollFrame", nil, Yipper.mainFrame, "UIPanelScrollFrameTemplate")
+    local messageFrame = CreateFrame("ScrollingMessageFrame", nil, Yipper.mainFrame)
 
-    scrollFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 0, -(headerHeight + 6))  -- Leave space for header
-    scrollFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -23, 20)  -- Leave space for scrollbar and resize grip
+    Mixin(messageFrame, BackdropTemplateMixin)
 
-    -- Create scroll child (content container)
-    local scrollChild = CreateFrame("Frame", nil, scrollFrame)
+    messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 6, -(headerHeight + 10))     -- below header
+    messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -6, 24)              -- above resize grip area
+    messageFrame:SetFontObject("GameFontNormal")
+    messageFrame:SetJustifyH("LEFT")
+    messageFrame:SetInsertMode("BOTTOM")
+    messageFrame:SetFading(false)
+    messageFrame:SetMaxLines(200)
+    messageFrame:EnableMouseWheel(true)
 
-    scrollChild:SetSize(scrollFrame:GetWidth(), 1)  -- Height will grow with content
-    scrollFrame:SetScrollChild(scrollChild)
-
-    -- Make the scrollbar thinner
-    local scrollBar = scrollFrame.ScrollBar
-
-    if scrollBar then
-        scrollBar:SetWidth(12)  -- Make it thin (default is ~18)
-    end
+    messageFrame:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground" })
+    messageFrame:SetBackdropColor(0, 0, 0, 0.5)
+    messageFrame:Show()
 
     -- Store references for later use
-    Yipper.scrollFrame = scrollFrame
-    Yipper.scrollChild = scrollChild
+    Yipper.messageFrame = messageFrame
     Yipper.headerFrame = headerFrame
     Yipper.headerText = headerText
 
@@ -173,5 +177,27 @@ function Yipper.UI:UpdateHeaderText()
         Yipper.headerText:SetText("Tracking: " .. tracked)
     else
         Yipper.headerText:SetText("Tracking: (none)")
+    end
+end
+
+-- Updates the displayed text in the mainFrame,
+-- using the data stored in the AddOn.
+function Yipper.UI:UpdateDisplayedText()
+    if Yipper.TrackedPlayer == nil then
+        return
+    end
+
+    -- Clear messages first
+    Yipper.messageFrame:Clear()
+
+    -- We have a tracked player, display their messages
+    for _, messageData in pairs(Yipper.DB.Messages[Yipper.TrackedPlayer]) do
+        Yipper.messageFrame:AddMessage(
+                messageData.message,
+                nil,
+                nil,
+                nil,
+                messageData.lineId
+        )
     end
 end
