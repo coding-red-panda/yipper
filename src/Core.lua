@@ -80,3 +80,24 @@ function Yipper:OnEvent(event, ...)
 end
 
 Yipper.mainFrame:SetScript("OnEvent", function(self, event, ...) Yipper:OnEvent(event, ...); end)
+
+-- Register the slash command for our AddOn
+SLASH_YIPPER1 = "/yip"
+SLASH_YIPPER2 = "/yipper"
+
+function SlashCmdList.YIPPER(msg, editBox)
+    if msg == "config" then
+        print("The settings screen is not implemented yet")
+    elseif msg == "help" then
+        print("Yipper supports the following options:")
+        print("help - this explanation")
+        print("config - Show the settings page")
+        print("no args - toggle the main window")
+    else
+        if Yipper.mainFrame:IsShown() then
+            Yipper.mainFrame:Hide()
+        else
+            Yipper.mainFrame:Show()
+        end
+    end
+end

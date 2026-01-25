@@ -21,21 +21,84 @@ end
 --- Handles the incoming chat events
 -- @param event The name of the event being triggered
 -- @param ... The arguments passed down with the event (message, sender, etc.)
+--
+-- The code is identical for most events, but we keep the splitting separate,
+-- just in case we need to account for special situation, so we can isolate the
+-- problem message's logic in the future.
 function Yipper.Events:OnEvent(event, ...)
-    if (event == "CHAT_MSG_EMOTE") then
+    if event == "CHAT_MSG_SAY" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_EMOTE" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_GUILD" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_OFFICER" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_PARTY" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_PARTY_LEADER" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_RAID" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_RAID_LEADER" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_YELL" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_WHISPER" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_RAID_WARNING" then
+        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        self:StoreMessage(message, sender, lineId, event)
+    elseif event == "CHAT_MSG_SYSTEM" then
+        local message, _, _, _, _, _, _, _, _, lineId = ...
 
-    end
+        -- We only care about rolls.
+        if message:match("^(%w+) rolls (%d+) %(1 %- (%d+)%)$") then
+            local sender = UnitName("player") .. "-" .. GetNormalizedRealmName()
 
-    if (event == "CHAT_MSG_SAY") then
+            self:StoreMessage(message, sender, lineId, event)
+        end
+    elseif event == "CHAT_MSG_TEXT_EMOTE" then
         local message, sender, _, _, _, _, _, _, _, _, lineId, guid = ...
-        self:StoreMessage(message, sender, lineId, guid, event)
+
+        -- Because actual emotes work different,
+        -- we need to fix the sender in both cases.
+        -- If we're the sender, just construct it using the realm.
+        if sender == UnitName("player") then
+            sender = UnitName("player") .. "-" .. GetNormalizedRealmName()
+        else
+            -- If the sender is someone else, use their GUID to get the player info.
+            local _, _, _, _, _, name, realmName = GetPlayerInfoByGUID(guid)
+
+            -- Sadly realmName is not returned on same realm emotes
+            -- so manually set it.
+            if realmName == nil or realmName == "" then
+                -- Is nil/empty on the same realm
+                realmName = GetNormalizedRealmName()
+            end
+
+            sender = name .. "-" .. realmName
+        end
+
+        print("correct?" .. sender)
+        self:StoreMessage(message, sender, lineId, event)
     end
 end
 
 --- Stores a message with the required arguments for the specific player.
 --- This builds the table with messages and automatically trims it as well
 --- when the maximum amount is exceeded.
-function Yipper.Events:StoreMessage(message, sender, lineId, guid, event)
+function Yipper.Events:StoreMessage(message, sender, lineId, event)
     -- Sanity check, to ensure nothing bad happens in case
     -- the table is not set...
     if not Yipper.DB.Messages then
@@ -48,10 +111,10 @@ function Yipper.Events:StoreMessage(message, sender, lineId, guid, event)
         Yipper.DB.Messages[sender] = { }
     end
 
+    -- Inject the record in the table.
     table.insert(Yipper.DB.Messages[sender], {
         ["message"] = message,
         ["lineId"] = lineId,
-        ["guid"] = guid,
         ["event"] = event
     })
 

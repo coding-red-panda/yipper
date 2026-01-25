@@ -19,8 +19,16 @@ in large crowds without depending on any single other AddOn.
 * `/s` or `/say`
 * `/y` or `/yell`
 * `/e` or `/emote`
+* Standard emotes
+* `/roll` results
+* Guild Chat
+* Office Chat
+* Raid Chat
+* Raid Leader Chat
+* Party Chat
+* Whispers
 
-The AddOn will collect these message for every player,
+The AddOn will collect these message for every player (where possible),
 and display them in a separate frame when hovering over the specific player.
 This allows you to simply see what said player said without having to scroll
 through the entire chat window.
@@ -30,6 +38,17 @@ through the entire chat window.
 If you wish to contribute to the AddOn, please feel free to open an Issue
 on GitHub and describe what you feel is missing.
 When time permits, the AddOn will be extended when enough requests come in.
+
+## Settings
+The settings window is not implemented yet.
+This will come in the future.
+
+## Slash Commands
+The AddOn provides the following slash commands: `/yip` or /`yipper`
+
+* `/yipper config` - Opens the settings window
+* `/yipper help` - Shows this help message
+* `/yipper` - toggles the main window
 
 ## License
 
