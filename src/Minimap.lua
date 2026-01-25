@@ -15,7 +15,40 @@ Yipper.Minimap = {}
 --- Initializes the plugin for the AddOn,
 --- constructing the button and attaching it to the minimap
 --- as well as registering the mouse behavior
+--- and registering the AddOn in the Compartment Frame.
 function Yipper.Minimap:Init()
+    -- Register our AddOn in the Minimap Compartment
+    AddonCompartmentFrame:RegisterAddon({
+        text = addonName,
+        icon = "Interface\\Icons\\ability_racial_nosefortrouble",
+        registerForAnyClick = true,
+        func = function(btn, arg1, arg2, checked, mouseButton)
+            Yipper.Minimap:OnMouseClick(mouseButton)
+        end,
+        funcOnEnter = function(menuItem)
+            GameTooltip:SetOwner(menuItem, "ANCHOR_BOTTOMLEFT", -15, 20)
+            GameTooltip:SetText(addonName)
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("|cFF00FF00Left-Click: Toggle Main Window|r")
+            GameTooltip:AddLine("|cFF00FF00Right-Click: Open Settings|r")
+            GameTooltip:Show()
+        end,
+        funcOnLeave = function()
+            GameTooltip:Hide()
+        end
+    })
+
+    -- Create the Minimap button if the User has it enabled.
+    if Yipper.DB.EnableMinimapButton then
+        self:InitMinimapButton()
+    end
+end
+
+-- Yipper.Minimap - InitMinimapButton
+--
+-- Constructs the entire minimap button with functionality
+-- if the user has it enabled.
+function Yipper.Minimap:InitMinimapButton()
     -- Button Frame
     local button = CreateFrame("Button", "YipperButton", Minimap)
     button:SetSize(31, 31)
