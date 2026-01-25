@@ -7,5 +7,6 @@
 
 src/Constants.lua
 src/UI.lua
+src/Minimap.lua
 src/Events.lua
 src/Core.lua
