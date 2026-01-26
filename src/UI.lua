@@ -185,8 +185,9 @@ end
 function Yipper.UI:UpdateDisplayedText()
     -- Return if there's no player tracked,
     -- or there's no messages for the player
-    if Yipper.TrackedPlayer == nil or
-        Yipper.DB.Messages[Yipper.TrackedPlayer] == nil then
+    if Yipper.TrackedPlayer == nil or   -- No player tracked
+        Yipper.DB.Messages == nil or    -- new character, no messages yet initializes
+        Yipper.DB.Messages[Yipper.TrackedPlayer] == nil then -- Player has not produced messages
         return
     end
 
