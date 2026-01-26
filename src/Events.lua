@@ -62,6 +62,13 @@ function Yipper.Events:OnEvent(event, ...)
     elseif event == "CHAT_MSG_SYSTEM" then
         local message, _, _, _, _, _, _, _, _, lineId = ...
 
+        -- Do not attempt to process messages when they are secret.
+        -- If we're dealing with a secret system message, just ignore it.
+        -- Means the player is in combat, and these messages are useless for us.
+        if issecretvalue(message) and not canaccessvalue(message) then
+            return
+        end
+
         -- We only care about rolls.
         if message:match("^(%w+) rolls (%d+) %(1 %- (%d+)%)$") then
             local sender = UnitName("player") .. "-" .. GetNormalizedRealmName()

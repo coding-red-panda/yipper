@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.0.3
+
+- Don't process system messages when they're secret.
+
 # 1.0.2
 
 - Account for messages not being initialized yet on new characters
