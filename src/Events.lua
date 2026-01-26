@@ -90,7 +90,6 @@ function Yipper.Events:OnEvent(event, ...)
             sender = name .. "-" .. realmName
         end
 
-        print("correct?" .. sender)
         self:StoreMessage(message, sender, lineId, event)
     end
 end
