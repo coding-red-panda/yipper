@@ -55,7 +55,6 @@ function Yipper.UI.Settings:Init()
     closeButton:SetSize(20, 20)
     closeButton:SetScript("OnClick", function()
         frame:Hide()
-        -- TODO: Save Settings
     end)
 
     -- Header
@@ -170,16 +169,16 @@ function Yipper.UI.Settings:AddAlphaSettings()
     local options = Settings.CreateSliderOptions(minvalue, maxValue, stepValue)
 
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value) return value end);
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Max, function(value) return maxValue end);
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Min, function(value) return minvalue end);
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Top, function(value) return "Window Alpha" end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Max, function(_) return maxValue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Min, function(_) return minvalue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Top, function(_) return "Window Alpha" end);
 
     local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
 
     slider:SetWidth(300)
     slider:SetPoint("TOPLEFT", 30, -70)
     slider:Init(Yipper.DB.WindowAlpha or 100, options.minValue, options.maxValue, options.steps, options.formatters)
-    slider:RegisterCallback("OnValueChanged", function(self, value)
+    slider:RegisterCallback("OnValueChanged", function(_, value)
         Yipper.DB.WindowAlpha = value
 
         Yipper.mainFrame:SetBackdropColor(0, 0, 0, value / 100)
@@ -206,7 +205,7 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
     colorButton.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
     colorButton.Texture:SetVertexColor(color.r, color.g, color.b)
 
-    colorButton:SetScript("OnClick", function(self)
+    colorButton:SetScript("OnClick", function(_)
         local function OnColorChanged()
             local red, green, blue = ColorPickerFrame:GetColorRGB()
 
@@ -258,7 +257,7 @@ function Yipper.UI.Settings:AddBorderColorPicker()
     colorButton.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
     colorButton.Texture:SetVertexColor(color.r, color.g, color.b)
 
-    colorButton:SetScript("OnClick", function(self)
+    colorButton:SetScript("OnClick", function(_)
         local function OnColorChanged()
             local red, green, blue = ColorPickerFrame:GetColorRGB()
 
