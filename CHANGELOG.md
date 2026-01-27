@@ -1,6 +1,6 @@
 ﻿# Yipper Changelog
 
-# 1.2.0
+# 1.1.0
 
 - Added the Settings Window
 - Activated the minimap button
