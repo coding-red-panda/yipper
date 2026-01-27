@@ -1,5 +1,14 @@
 ﻿# Yipper Changelog
 
+# 1.2.0
+
+- Added the Settings Window
+- Activated the minimap button
+- Added a minimap toggle in the settings window
+- Added support for the window colors
+- Added support for the window border colors
+- Added support for the window transparency
+
 # 1.0.4
 
 - Preserve the state of the main window's display setting.

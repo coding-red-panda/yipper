@@ -39,9 +39,7 @@ function Yipper.Minimap:Init()
     })
 
     -- Create the Minimap button if the User has it enabled.
-    if Yipper.DB.EnableMinimapButton then
-        self:InitMinimapButton()
-    end
+    self:InitMinimapButton()
 end
 
 -- Yipper.Minimap - InitMinimapButton
@@ -137,9 +135,13 @@ function Yipper.Minimap:InitMinimapButton()
     button:SetScript("OnEvent", button.update)
     button:RegisterEvent("LOADING_SCREEN_DISABLED")
 
-    -- Calculate the position and show the button.
+    -- Calculate the position
     button:update()
-    button:Show()
+
+    -- Determine whether to show the button initially
+    if Yipper.DB.EnableMinimapButton then
+        button:Show()
+    end
 
     -- Store the reference
     Yipper.Minimap.frame = button
@@ -152,12 +154,8 @@ end
 -- When the user uses the right mouse button, we toggle the settings window.
 function Yipper.Minimap:OnMouseClick(button)
     if button == "RightButton" then
-        -- TODO: Open the Settings Menu
+        Yipper.settingsFrame:Toggle()
     else
-        if Yipper.mainFrame:IsShown() then
-            Yipper.mainFrame:Hide()
-        else
-            Yipper.mainFrame:Show()
-        end
+        Yipper.mainFrame:Toggle()
     end
 end

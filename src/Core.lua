@@ -34,7 +34,10 @@ function Yipper:OnEvent(event, ...)
         if YipperDB == nil then
             Yipper.DB = {
                 ["Messages"] = {},
-                ["MaxMessages"] = 50
+                ["MaxMessages"] = 50,
+                ["BackgroundColor"] = Yipper.Constants.BlackColor,
+                ["BorderColor"] = Yipper.Constants.BlackColor,
+                ["Alpha"] = Yipper.Constants.Alpha
             }
         end
 
@@ -48,6 +51,11 @@ function Yipper:OnEvent(event, ...)
         -- If the Yipper UI is available, initialize it
         if Yipper.UI then
             Yipper.UI:Init()
+        end
+
+        -- If the Yipper UI Settings is available, initialize it
+        if Yipper.UI.Settings then
+            Yipper.UI.Settings:Init()
         end
 
         -- If the Yipper minimap is available, initialize it
@@ -87,19 +95,13 @@ SLASH_YIPPER2 = "/yipper"
 
 function SlashCmdList.YIPPER(msg, editBox)
     if msg == "config" then
-        print("The settings screen is not implemented yet")
+        Yipper.settingsFrame:Toggle()
     elseif msg == "help" then
         print("Yipper supports the following options:")
         print("help - this explanation")
         print("config - Show the settings page")
         print("no args - toggle the main window")
     else
-        if Yipper.mainFrame:IsShown() then
-            Yipper.DB.ShowWindow = false
-            Yipper.mainFrame:Hide()
-        else
-            Yipper.DB.ShowWindow = false
-            Yipper.mainFrame:Show()
-        end
+        Yipper.mainFrame:Toggle()
     end
 end

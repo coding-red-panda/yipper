@@ -3,7 +3,7 @@
 -- This file is responsible for registering the entire UI of Yipper.
 -- The code will build up the required interface for the main window
 -- and make sure it can be displayed.
-local addonName, Yipper = ...
+local _, Yipper = ...
 local backdropConfiguration = {
     bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
     edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
@@ -22,11 +22,15 @@ function Yipper.UI:Init()
     -- needed functions.
     Mixin(Yipper.mainFrame, BackdropTemplateMixin)
 
+    local backgroundColor = Yipper.DB.BackgroundColor or Yipper.Constants.BlackColor
+    local borderColor = Yipper.DB.BorderColor or Yipper.Constants.BlackColor
+    local alpha = Yipper.DB.WindowAlpha or Yipper.Constants.Alpha
+
     -- Configure the frame
     Yipper.mainFrame:SetSize(200, 150)
     Yipper.mainFrame:SetBackdrop(backdropConfiguration)
-    Yipper.mainFrame:SetBackdropColor(0, 0, 0)
-    Yipper.mainFrame:SetBackdropBorderColor(0.4, 0.4, 0.4)
+    Yipper.mainFrame:SetBackdropColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, alpha / 100)
+    Yipper.mainFrame:SetBackdropBorderColor(borderColor.r, borderColor.g, borderColor.b, alpha / 100)
 
     -- Add behavior to our frame
     -- Make it movable
@@ -101,7 +105,7 @@ function Yipper.UI:Init()
     messageFrame:EnableMouseWheel(true)
 
     messageFrame:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground" })
-    messageFrame:SetBackdropColor(0, 0, 0, 0.5)
+    messageFrame:SetBackdropColor(0, 0, 0, 0)
     messageFrame:Show()
 
     -- Store references for later use
@@ -120,13 +124,22 @@ function Yipper.UI:Init()
     resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
     resizeButton:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
     resizeButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-    resizeButton:SetScript("OnDragStart", function(self)
+    resizeButton:SetScript("OnDragStart", function()
         Yipper.mainFrame:StartSizing("BOTTOMRIGHT")
     end)
-    resizeButton:SetScript("OnDragStop", function(self)
+    resizeButton:SetScript("OnDragStop", function()
         Yipper.mainFrame:StopMovingOrSizing()
         Yipper.UI:SavePosition()  -- Save after resizing
     end)
+
+    -- define a custom toggle function to easily toggle the frame.
+    Yipper.mainFrame.Toggle = function(self)
+        if self:IsShown() then
+            self:Hide()
+        else
+            self:Show()
+        end
+    end
 
     -- Restore saved position/size or use defaults
     Yipper.UI:RestorePosition()

@@ -39,3 +39,6 @@ Yipper.Constants.ChatColors = {
     ["CHAT_MSG_WHISPER"] = { ["r"] = 255, ["g"] = 128, ["b"] = 255 },
     ["CHAT_MSG_SYSTEM"] = { ["r"] = 255, ["g"] = 255, ["b"] = 0 }
 }
+
+Yipper.Constants.BlackColor = { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
+Yipper.Constants.Alpha = 100
