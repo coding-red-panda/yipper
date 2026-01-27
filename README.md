@@ -40,8 +40,13 @@ on GitHub and describe what you feel is missing.
 When time permits, the AddOn will be extended when enough requests come in.
 
 ## Settings
-The settings window is not implemented yet.
-This will come in the future.
+
+The Settings window allows you to configure the following settings:
+
+* The display of the minimap button
+* The alpha/transparency of the windows
+* The background color of the windows
+* The border color of the windows
 
 ## Slash Commands
 The AddOn provides the following slash commands: `/yip` or /`yipper`
@@ -49,6 +54,12 @@ The AddOn provides the following slash commands: `/yip` or /`yipper`
 * `/yipper config` - Opens the settings window
 * `/yipper help` - Shows this help message
 * `/yipper` - toggles the main window
+
+## Dependencies
+
+The AddOn has zero dependencies.
+It does not even require things like `LibStub`, `WoWAce` or `LibIconDb`.
+This is a 100%, pure lua AddOn.
 
 ## License
 
