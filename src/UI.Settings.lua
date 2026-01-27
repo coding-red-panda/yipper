@@ -193,7 +193,7 @@ end
 -- Responsible for hooking up the UI components to be able to select the background
 -- color of the windows.
 function Yipper.UI.Settings:AddBackgroundColorPicker()
-    local color = Yipper.DB.BackgroundColor or { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
+    local color = Yipper.DB.BackgroundColor or Yipper.Constants.BlackColor
     local alpha = Yipper.DB.WindowAlpha or Yipper.Constant.Alpha
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
@@ -230,15 +230,16 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
             Yipper.mainFrame:SetBackdropColor(red, green, blue, alpha / 100)
         end
 
+        local storedColor = Yipper.DB.BackgroundColor or Yipper.Constants.BlackColor
         local options = {
             swatchFunc = OnColorChanged,
             opacityFunc = OnColorChanged,
             cancelFunc = OnCancel,
             hasOpacity = false,
             opacity = 100,
-            r = color.r,
-            g = color.g,
-            b = color.b,
+            r = storedColor.r,
+            g = storedColor.g,
+            b = storedColor.b,
         }
 
         ColorPickerFrame:SetupColorPickerAndShow(options)
@@ -287,15 +288,16 @@ function Yipper.UI.Settings:AddBorderColorPicker()
             Yipper.mainFrame:SetBackdropBorderColor(red, green, blue, alpha / 100)
         end
 
+        local storedColor = Yipper.DB.BorderColor or Yipper.Constants.BlackColor
         local options = {
             swatchFunc = OnColorChanged,
             opacityFunc = OnColorChanged,
             cancelFunc = OnCancel,
             hasOpacity = false,
             opacity = 100,
-            r = color.r,
-            g = color.g,
-            b = color.b,
+            r = storedColor.r,
+            g = storedColor.g,
+            b = storedColor.b,
         }
 
         ColorPickerFrame:SetupColorPickerAndShow(options)

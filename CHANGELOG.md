@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+# 1.1.3
+
+- Preserve previous applied color when cancelling the `ColorPickerFrame`
+- Init `ColorPickerFrame` with the current color
+
 # 1.1.2
 
 - Fixed a bug in the onCancel function of the `ColorPickerFrame`
