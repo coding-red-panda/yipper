@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.0.4
+
+- Preserve the state of the main window's display setting.
+
 # 1.0.3
 
 - Don't process system messages when they're secret.

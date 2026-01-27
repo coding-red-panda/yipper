@@ -95,8 +95,10 @@ function SlashCmdList.YIPPER(msg, editBox)
         print("no args - toggle the main window")
     else
         if Yipper.mainFrame:IsShown() then
+            Yipper.DB.ShowWindow = false
             Yipper.mainFrame:Hide()
         else
+            Yipper.DB.ShowWindow = false
             Yipper.mainFrame:Show()
         end
     end

@@ -49,7 +49,10 @@ function Yipper.UI:Init()
     -- That allows us to instantly change the text when the target changes and the
     -- UI is refreshed.
     Yipper.mainFrame:SetScript("OnUpdate", function() Yipper.UI:UpdateDisplayedText() end)
-    Yipper.mainFrame:SetScript("OnShow", function() Yipper.UI:UpdateDisplayedText() end)
+    Yipper.mainFrame:SetScript("OnShow", function()
+        Yipper.DB.ShowWindow = true
+        Yipper.UI:UpdateDisplayedText()
+    end)
 
     -- Create close button (top-right corner)
     local closeButton = CreateFrame("Button", nil, Yipper.mainFrame, "UIPanelCloseButton")
@@ -58,6 +61,7 @@ function Yipper.UI:Init()
     closeButton:SetSize(20, 20)
     closeButton:SetScript("OnClick", function()
         Yipper.mainFrame:Hide()
+        Yipper.DB.ShowWindow = false
     end)
 
     -- Header (tracks Yipper.TrackedPlayer)
@@ -127,8 +131,12 @@ function Yipper.UI:Init()
     -- Restore saved position/size or use defaults
     Yipper.UI:RestorePosition()
 
-    -- Make the frame visible for now
-    Yipper.mainFrame:Show()
+    -- Show the window if the window was previously shown
+    if Yipper.DB.ShowWindow then
+        Yipper.mainFrame:Show()
+    else
+        Yipper.mainFrame:Hide()
+    end
 end
 
 -- Yipper.UI - SavePosition
@@ -161,10 +169,19 @@ function Yipper.UI:RestorePosition()
         Yipper.mainFrame:ClearAllPoints()
         Yipper.mainFrame:SetPoint(pos.point, UIParent, pos.relativePoint, pos.xOfs, pos.yOfs)
         Yipper.mainFrame:SetSize(pos.width, pos.height)
+
+        -- Show the window if the window was previously shown
+        if Yipper.DB.ShowWindow then
+            Yipper.mainFrame:Show()
+        else
+            Yipper.mainFrame:Hide()
+        end
     else
         -- Use default position and size
         Yipper.mainFrame:SetSize(300, 200)
         Yipper.mainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+        Yipper.mainFrame:Show()
+        Yipper.DB.ShowWindow = true
     end
 end
 
