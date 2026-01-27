@@ -20,7 +20,7 @@ function Yipper.Minimap:Init()
     -- Register our AddOn in the Minimap Compartment
     AddonCompartmentFrame:RegisterAddon({
         text = addonName,
-        icon = "Interface\\Icons\\ability_racial_nosefortrouble",
+        icon = "Interface\\Icons\\inv_foxwyvernpetred",
         registerForAnyClick = true,
         func = function(btn, arg1, arg2, checked, mouseButton)
             Yipper.Minimap:OnMouseClick(mouseButton)
@@ -62,7 +62,7 @@ function Yipper.Minimap:InitMinimapButton()
     button.texture = button:CreateTexture(nil, "ARTWORK");
     button.texture:SetSize(20, 20)
     button.texture:SetPoint("TOPLEFT", 7, -6)
-    button.texture:SetTexture("Interface\\Icons\\ability_racial_nosefortrouble")
+    button.texture:SetTexture("Interface\\Icons\\inv_foxwyvernpetred")
 
     -- Button Overlay (Border)
     local overlay = button:CreateTexture(nil, "OVERLAY")

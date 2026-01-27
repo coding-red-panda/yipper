@@ -1,9 +1,21 @@
 ## Interface: 120000, 110207
-## Version: 1.1.0
+## Version: 1.1.1
 ## Title: Yipper
 ## Notes: AddOn to track chat messages from players
 ## Author: Keento
 ## SavedVariablesPerCharacter: YipperDB
+## IconTexture: Interface\Icons\inv_foxwyvernpetred
+## Category-enUS: Roleplay
+## Category-deDE: Rollenspiel
+## Category-esES: Juego de rol
+## Category-esMX: Juego de rol
+## Category-frFR: Jeu de rôle
+## Category-itIT: Gioco di Ruolo
+## Category-koKR: 롤플레잉
+## Category-ptBR: Interpretação de Papel
+## Category-ruRU: Ролевая игра
+## Category-zhCN: 角色扮演
+## Category-zhTW: 角色扮演
 
 src/Constants.lua
 src/UI.lua

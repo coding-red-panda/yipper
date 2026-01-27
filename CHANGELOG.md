@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+# 1.1.1
+
+- Assign the correct AddOn Category to Yipper
+- Assign the correct Icon to Yipper
+
 # 1.1.0
 
 - Added the Settings Window
