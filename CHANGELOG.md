@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.1.2
+
+- Fixed a bug in the onCancel function of the `ColorPickerFrame`
+
 # 1.1.1
 
 - Assign the correct AddOn Category to Yipper

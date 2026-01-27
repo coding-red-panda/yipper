@@ -220,9 +220,14 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
 
         local function OnCancel()
             local red, green, blue = ColorPickerFrame:GetPreviousValues()
-            local colorBox = ColorPickerFrame.colorBox.Texture
 
-            colorBox:SetVertexColor(red, green, blue)
+            -- Store the selected color
+            Yipper.DB.BackgroundColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+
+            -- Update UI components
+            colorButton.Texture:SetVertexColor(red, green, blue)
+            Yipper.settingsFrame:SetBackdropColor(red, green, blue, alpha / 100)
+            Yipper.mainFrame:SetBackdropColor(red, green, blue, alpha / 100)
         end
 
         local options = {
@@ -262,7 +267,7 @@ function Yipper.UI.Settings:AddBorderColorPicker()
             local red, green, blue = ColorPickerFrame:GetColorRGB()
 
             -- Store the selected color
-            Yipper.DB.BackgroundColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+            Yipper.DB.BorderColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
 
             -- Update UI components
             colorButton.Texture:SetVertexColor(red, green, blue)
@@ -272,9 +277,14 @@ function Yipper.UI.Settings:AddBorderColorPicker()
 
         local function OnCancel()
             local red, green, blue = ColorPickerFrame:GetPreviousValues()
-            local colorBox = ColorPickerFrame.colorBox.Texture
 
-            colorBox:SetVertexColor(red, green, blue)
+            -- Store the selected color
+            Yipper.DB.BorderColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+
+            -- Update UI components
+            colorButton.Texture:SetVertexColor(red, green, blue)
+            Yipper.settingsFrame:SetBackdropBorderColor(red, green, blue, alpha / 100)
+            Yipper.mainFrame:SetBackdropBorderColor(red, green, blue, alpha / 100)
         end
 
         local options = {
