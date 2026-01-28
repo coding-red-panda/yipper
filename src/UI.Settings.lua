@@ -194,7 +194,7 @@ end
 -- color of the windows.
 function Yipper.UI.Settings:AddBackgroundColorPicker()
     local color = Yipper.DB.BackgroundColor or Yipper.Constants.BlackColor
-    local alpha = Yipper.DB.WindowAlpha or Yipper.Constant.Alpha
+    local alpha = Yipper.DB.WindowAlpha or Yipper.Constants.Alpha
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)
@@ -252,7 +252,7 @@ end
 -- color of the windows.
 function Yipper.UI.Settings:AddBorderColorPicker()
     local color = Yipper.DB.BorderColor or Yipper.Constants.BlackColor
-    local alpha = Yipper.DB.WindowAlpha or Yipper.Constant.Alpha
+    local alpha = Yipper.DB.WindowAlpha or Yipper.Constants.Alpha
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)

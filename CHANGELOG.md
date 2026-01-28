@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.1.4
+
+- Fixed a small typo in the UI.Settings.lua file
+
 # 1.1.3
 
 - Preserve previous applied color when cancelling the `ColorPickerFrame`
