@@ -44,19 +44,14 @@ function Yipper.UI:Init()
         self:StopMovingOrSizing()
         Yipper.UI:SavePosition()  -- Save after moving
     end)
-
-    -- Make it resizable
-    Yipper.mainFrame:SetResizable(true)
-    Yipper.mainFrame:SetResizeBounds(200, 150, 800, 600)  -- minWidth, minHeight, maxWidth, maxHeight
-
-    -- Register the OnUpdate callback to display the text we have been tracking.
-    -- That allows us to instantly change the text when the target changes and the
-    -- UI is refreshed.
-    Yipper.mainFrame:SetScript("OnUpdate", function() Yipper.UI:UpdateDisplayedText() end)
     Yipper.mainFrame:SetScript("OnShow", function()
         Yipper.DB.ShowWindow = true
         Yipper.UI:UpdateDisplayedText()
     end)
+
+    -- Make it resizable
+    Yipper.mainFrame:SetResizable(true)
+    Yipper.mainFrame:SetResizeBounds(200, 150, 800, 600)  -- minWidth, minHeight, maxWidth, maxHeight
 
     -- Create close button (top-right corner)
     local closeButton = CreateFrame("Button", nil, Yipper.mainFrame, "UIPanelCloseButton")
@@ -101,8 +96,24 @@ function Yipper.UI:Init()
     messageFrame:SetJustifyH("LEFT")
     messageFrame:SetInsertMode("BOTTOM")
     messageFrame:SetFading(false)
-    messageFrame:SetMaxLines(200)
+    messageFrame:SetMaxLines(Yipper.DB.MaxMessages)
+    messageFrame:SetHyperlinksEnabled(true) -- Allow links
+
+    -- Assume the user is at the bottom by default
+    messageFrame.isAtBottom = true
+
+    -- Enable Scroll behavior with the mouse wheel
     messageFrame:EnableMouseWheel(true)
+    messageFrame:SetScript("OnMouseWheel", function(self, delta)
+
+        if delta > 0 then
+            self:ScrollUp()
+            self.isAtBottom = false -- User scrolled up, so we're not at the bottom.
+        else
+            self:ScrollDown()
+            self.isAtBottom = self:AtBottom() -- Let the frame determine if we're at the bottom
+        end
+    end)
 
     messageFrame:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground" })
     messageFrame:SetBackdropColor(0, 0, 0, 0)

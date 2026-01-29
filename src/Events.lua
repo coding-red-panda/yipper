@@ -129,21 +129,61 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
     if(table.getn(Yipper.DB.Messages) > Yipper.DB.MaxMessages) then
         table.remove(Yipper.DB.Messages, 1)
     end
+
+    -- Push the message into the messageFrame if the sender is the user currently
+    -- being tracked.
+    if sender == Yipper.TrackedPlayer then
+        local colorCodes = Yipper.Constants.ChatColors[event]
+
+        -- Check if we're at the bottom
+        local wasAtBottom = Yipper.messageFrame:AtBottom()
+
+        -- Add the message with the correct color codes.
+        -- The method needs values between 0 - 1, so divide the values by 255.
+        Yipper.messageFrame:AddMessage(message, colorCodes.r / 255, colorCodes.g / 255, colorCodes.b / 255, lineId)
+
+        if not wasAtBottom then
+            Yipper.messageFrame:ScrollUp()
+        end
+    end
 end
 
+-- Yipper.Events - UpdateTrackedPlayer
+--
 -- Updates the tracked player based on the following order:
 --- 1. Are we hovering over someone with the the mouse?
 --- 2. Do we have someone selected?
 --- 3. Set to nil in all other cases.
+--
+-- Important: This method is called by a Ticker every 0.1 seconds!
 function Yipper.Events:UpdateTrackedPlayer()
+    -- Variable for tracking the new potential target
+    local newTrackedPlayer = nil
+
+    -- Hovering takes precedence, if we're hovering over a player,
+    -- that will be our new target.
+    -- Otherwise check if the target we have currently have is a player.
     if UnitName("mouseover") ~= nil and UnitIsPlayer("mouseover") then
         local name, realm = UnitName("mouseover")
-        Yipper.TrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
+        newTrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
     elseif UnitName("target") ~= nil and UnitIsPlayer("target") then
         local name, realm = UnitName("target")
-        Yipper.TrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
-    else
-        Yipper.TrackedPlayer = nil
-        Yipper.messageFrame:Clear()
+        newTrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
+    end
+
+    -- Only update if the newTrackedPlayer is different from the one we're
+    -- currently tracking. This accounts for hover, deselect or selecting
+    -- a target.
+    if newTrackedPlayer ~= Yipper.TrackedPlayer then
+        Yipper.TrackedPlayer = newTrackedPlayer
+
+        -- If we have a target or hover, show their messages.
+        -- If not, clear the messages.
+        if Yipper.TrackedPlayer then
+            Yipper.UI.UpdateDisplayedText()
+        else
+            -- No player tracked, clear the frame
+            Yipper.messageFrame:Clear()
+        end
     end
 end

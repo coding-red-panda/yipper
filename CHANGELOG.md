@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.1.5
+
+- MessageFrame is now scrollable
+
 # 1.1.4
 
 - Fixed a small typo in the UI.Settings.lua file
