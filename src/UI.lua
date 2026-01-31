@@ -92,7 +92,7 @@ function Yipper.UI:Init()
 
     messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 6, -(headerHeight + 10))     -- below header
     messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -6, 24)              -- above resize grip area
-    messageFrame:SetFontObject("GameFontNormal")
+    messageFrame:SetFont(Yipper.Constants.Fonts.FrizQuadrata, Yipper.DB.FontSize or Yipper.Constants.FontSize, "")
     messageFrame:SetJustifyH("LEFT")
     messageFrame:SetInsertMode("BOTTOM")
     messageFrame:SetFading(false)

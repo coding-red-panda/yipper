@@ -37,7 +37,9 @@ function Yipper:OnEvent(event, ...)
                 ["MaxMessages"] = 50,
                 ["BackgroundColor"] = Yipper.Constants.BlackColor,
                 ["BorderColor"] = Yipper.Constants.BlackColor,
-                ["Alpha"] = Yipper.Constants.Alpha
+                ["Alpha"] = Yipper.Constants.Alpha,
+                ["FontSize"] = Yipper.Constants.FontSize,
+                ["SelectedFont"] = Yipper.Constants.Fonts.FrizQuadrata
             }
         end
 

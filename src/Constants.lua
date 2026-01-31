@@ -40,5 +40,12 @@ Yipper.Constants.ChatColors = {
     ["CHAT_MSG_SYSTEM"] = { ["r"] = 255, ["g"] = 255, ["b"] = 0 }
 }
 
+Yipper.Constants.Fonts ={
+    ["TypeWriter"] = "Interface\\AddOns\\Yipper\\Fonts\\atwriter.ttf",
+    ["BlueWinter"] = "Interface\\AddOns\\Yipper\\Fonts\\Blue Winter.ttf",
+    ["FrizQuadrata"] = "Interface\\AddOns\\Yipper\\Fonts\\Friz Quadrata Regular.ttf",
+    ["Morpheus"] = "Interface\\AddOns\\Yipper\\Fonts\\MORPHEUS.ttf"
+}
 Yipper.Constants.BlackColor = { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
 Yipper.Constants.Alpha = 100
+Yipper.Constants.FontSize = 12

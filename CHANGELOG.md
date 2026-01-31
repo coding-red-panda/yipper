@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.1.6
+
+- Added a slider to set the font-size of the message text
+
 # 1.1.5
 
 - MessageFrame is now scrollable

@@ -82,6 +82,8 @@ function Yipper.UI.Settings:Init()
     self:AddAlphaSettings()
     self:AddBackgroundColorPicker()
     self:AddBorderColorPicker()
+    self:AddFontSizeSettings()
+    self:AddFontSelectionSettings()
 
     -- Define a custom toggle function
     Yipper.settingsFrame.Toggle = function(self)
@@ -302,4 +304,73 @@ function Yipper.UI.Settings:AddBorderColorPicker()
 
         ColorPickerFrame:SetupColorPickerAndShow(options)
     end)
+end
+
+-- Yipper.UI.Settings - AddFontSizeSettings
+--
+-- Responsible for hooking up the UI components to be able to control the
+-- font size of the windows to make text more readable.
+function Yipper.UI.Settings:AddFontSizeSettings()
+    local minvalue = 8
+    local maxValue = 64
+    local stepValue = 2
+    local options = Settings.CreateSliderOptions(minvalue, maxValue, stepValue)
+
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value) return value end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Max, function(_) return maxValue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Min, function(_) return minvalue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Top, function(_) return "Font Size" end);
+
+    local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
+
+    slider:SetWidth(340)
+    slider:SetPoint("TOPLEFT", 30, -200)
+    slider:Init(
+            Yipper.DB.FontSize or Yipper.Constants.FontSize,
+            options.minValue,
+            options.maxValue,
+            options.steps,
+            options.formatters
+    )
+    slider:RegisterCallback("OnValueChanged", function(_, value)
+        Yipper.DB.FontSize = value
+        Yipper.messageFrame:SetFont(Yipper.DB.SelectedFont, value, "");
+    end, slider)
+end
+
+-- Yipper.UI.Settings - AddFontSelectionSettings
+--
+-- Responsible for hooking up the UI components to be able to control the
+-- font of the windows to make text more readable.
+function Yipper.UI.Settings:AddFontSelectionSettings()
+    -- Generator function to construct the actual button
+    local createButton = function(root, display, font)
+        root:CreateButton(display, function(data)
+            local fontSize = Yipper.DB.FontSize
+
+            Yipper.DB.SelectedFont = font
+            Yipper.messageFrame:SetFont(font, fontSize, "")
+        end)
+    end
+
+    -- Generator function to create all the buttons.
+    local function GeneratorFunction(owner, rootDescription)
+        rootDescription:CreateTitle("Font Selection")
+        createButton(rootDescription, "Another Typewriter", Yipper.Constants.Fonts.TypeWriter)
+        createButton(rootDescription, "Blue Winter", Yipper.Constants.Fonts.BlueWinter)
+        createButton(rootDescription, "FrizQuadrata", Yipper.Constants.Fonts.FrizQuadrata)
+        createButton(rootDescription, "Morpheus", Yipper.Constants.Fonts.Morpheus)
+    end
+
+    -- Create and configure the DropDown.
+    local dropdown = CreateFrame("DropdownButton", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
+
+    dropdown:SetText("Select Font")
+    dropdown:SetSize(340, 20)
+    dropdown:SetPoint("TOPLEFT", 30, -260)
+    dropdown:SetupMenu(GeneratorFunction)
+    dropdown.Texture = dropdown:CreateTexture()
+    dropdown.Texture:SetAllPoints()
+    dropdown.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
+    dropdown.Texture:SetVertexColor(0, 0, 0)
 end
