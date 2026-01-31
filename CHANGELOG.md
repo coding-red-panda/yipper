@@ -3,6 +3,7 @@
 # 1.1.6
 
 - Added a slider to set the font-size of the message text
+- Added support for tracking rolls using AddOn Comms
 
 # 1.1.5
 

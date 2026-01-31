@@ -50,6 +50,10 @@ function Yipper:OnEvent(event, ...)
             Yipper.DB = YipperDB
         end
 
+        if Yipper.Comms then
+            Yipper.Comms:Init()
+        end
+
         -- If the Yipper UI is available, initialize it
         if Yipper.UI then
             Yipper.UI:Init()

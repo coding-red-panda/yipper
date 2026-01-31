@@ -240,22 +240,26 @@ function Yipper.UI:UpdateDisplayedText()
         local colorCodes = Yipper.Constants.ChatColors[messageData.event]
         local message = messageData.message
 
-        -- In case of an emote, we need to inject the player's name before the emote
-        -- to make it make sense.
-        -- Use Regex, to strip out the Realm name (After the last -)
-        if messageData.event == "CHAT_MSG_EMOTE" then
-            local player = Yipper.TrackedPlayer:match("^(.*)%-.+$")
-            message = player .. " " .. messageData.message
-        end
+        -- Safety check, we might have corrupt data in the table
+        -- Will resolve over time as table clears out, but don't want to crash users.
+        if colorCodes then
+            -- In case of an emote, we need to inject the player's name before the emote
+            -- to make it make sense.
+            -- Use Regex, to strip out the Realm name (After the last -)
+            if messageData.event == "CHAT_MSG_EMOTE" then
+                local player = Yipper.TrackedPlayer:match("^(.*)%-.+$")
+                message = player .. " " .. messageData.message
+            end
 
-        -- Add the message with the correct color codes.
-        -- The method needs values between 0 - 1, so divide the values by 255.
-        Yipper.messageFrame:AddMessage(
-            message,
-            colorCodes.r / 255,
-            colorCodes.g / 255,
-            colorCodes.b / 255,
-            messageData.lineId
-        )
+            -- Add the message with the correct color codes.
+            -- The method needs values between 0 - 1, so divide the values by 255.
+            Yipper.messageFrame:AddMessage(
+                message,
+                colorCodes.r / 255,
+                colorCodes.g / 255,
+                colorCodes.b / 255,
+                messageData.lineId
+            )
+        end
     end
 end

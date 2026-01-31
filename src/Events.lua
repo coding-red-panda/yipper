@@ -60,7 +60,7 @@ function Yipper.Events:OnEvent(event, ...)
         local message, sender, _, _, _, _, _, _, _, _, lineId = ...
         self:StoreMessage(message, sender, lineId, event)
     elseif event == "CHAT_MSG_SYSTEM" then
-        local message, _, _, _, _, _, _, _, _, lineId = ...
+        local message, _, _, _, _, _, _, _, _, _, lineId = ...
 
         -- Do not attempt to process messages when they are secret.
         -- If we're dealing with a secret system message, just ignore it.
@@ -69,11 +69,32 @@ function Yipper.Events:OnEvent(event, ...)
             return
         end
 
-        -- We only care about rolls.
-        if message:match("^(%w+) rolls (%d+) %(1 %- (%d+)%)$") then
-            local sender = UnitName("player") .. "-" .. GetNormalizedRealmName()
+        -- If the event doesn't include "rolls", it's not a roll event
+        -- and we can discard it
+        if not string.find(message, "rolls") then
+            return
+        end
 
-            self:StoreMessage(message, sender, lineId, event)
+        local author, rollResult, rollMin, rollMax = string.match(message, "(.+) rolls (%d+) %((%d+)-(%d+)%)");
+
+        -- Only broadcast our own messages, otherwise every single roll event will be broadcast as "us".
+        -- We don't want that, we want the AddOn to receive rolls from other people and process them
+        -- accordingly.
+        if author == UnitName("player") then
+            -- Because Blizzard in all their wisdom decided not to include the realm or anything
+            -- tangible for these events, we'll do it ourselves with a custom event.
+            -- If we rolled, just broadcast the roll over the Comms and let the listening
+            -- addons handle it to parse the roll message properly with the needed data.
+            Yipper.Comms:BroadcastMessage(message)
+        end
+    elseif event == "CHAT_MSG_ADDON_LOGGED" then
+        local prefix, message, channel, sender, target, zoneChannelId, localID, name, instanceID = ...
+
+        -- We only care about messages for Yipper, ignore everything else.
+        if prefix == addonName then
+            -- Since this will just be a roll broadcast by someone,
+            -- Add it to the message list as a system message.
+            self:StoreMessage(message, sender, GetChatTypeIndex("SYSTEM"), "CHAT_MSG_SYSTEM")
         end
     elseif event == "CHAT_MSG_TEXT_EMOTE" then
         local message, sender, _, _, _, _, _, _, _, _, lineId, guid = ...

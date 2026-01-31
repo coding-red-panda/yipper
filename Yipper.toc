@@ -18,6 +18,7 @@
 ## Category-zhTW: 角色扮演
 
 src/Constants.lua
+src/Comms.lua
 src/UI.lua
 src/UI.Settings.lua
 src/Minimap.lua

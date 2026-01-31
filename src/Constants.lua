@@ -21,7 +21,8 @@ Yipper.Constants.ChatEvents = {
     "CHAT_MSG_YELL",
     "CHAT_MSG_SAY",
     "CHAT_MSG_WHISPER",
-    "CHAT_MSG_SYSTEM"
+    "CHAT_MSG_SYSTEM",
+    "CHAT_MSG_ADDON_LOGGED"
 }
 
 Yipper.Constants.ChatColors = {
@@ -49,3 +50,4 @@ Yipper.Constants.Fonts ={
 Yipper.Constants.BlackColor = { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
 Yipper.Constants.Alpha = 100
 Yipper.Constants.FontSize = 12
+Yipper.Constants.CommsChannel = "YipperComms"
