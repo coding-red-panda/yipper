@@ -84,6 +84,8 @@ function Yipper.UI.Settings:Init()
     self:AddBorderColorPicker()
     self:AddFontSizeSettings()
     self:AddFontSelectionSettings()
+    self:AddNotificationColorPicker()
+    self:NotificationSelectionSettings()
 
     -- Define a custom toggle function
     Yipper.settingsFrame.Toggle = function(self)
@@ -177,7 +179,7 @@ function Yipper.UI.Settings:AddAlphaSettings()
 
     local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
 
-    slider:SetWidth(300)
+    slider:SetWidth(340, 20)
     slider:SetPoint("TOPLEFT", 30, -70)
     slider:Init(Yipper.DB.WindowAlpha or 100, options.minValue, options.maxValue, options.steps, options.formatters)
     slider:RegisterCallback("OnValueChanged", function(_, value)
@@ -200,7 +202,7 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)
-    colorButton:SetPoint("TOPLEFT", 30, -140)
+    colorButton:SetPoint("TOPLEFT", 30, -190)
     colorButton:SetText("Set Background Color")
     colorButton.Texture = colorButton:CreateTexture()
     colorButton.Texture:SetAllPoints()
@@ -258,7 +260,7 @@ function Yipper.UI.Settings:AddBorderColorPicker()
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)
-    colorButton:SetPoint("TOPLEFT", 30, -170)
+    colorButton:SetPoint("TOPLEFT", 30, -220)
     colorButton:SetText("Set Border Color")
     colorButton.Texture = colorButton:CreateTexture()
     colorButton.Texture:SetAllPoints()
@@ -324,7 +326,7 @@ function Yipper.UI.Settings:AddFontSizeSettings()
     local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
 
     slider:SetWidth(340)
-    slider:SetPoint("TOPLEFT", 30, -200)
+    slider:SetPoint("TOPLEFT", 30, -130)
     slider:Init(
             Yipper.DB.FontSize or Yipper.Constants.FontSize,
             options.minValue,
@@ -356,10 +358,9 @@ function Yipper.UI.Settings:AddFontSelectionSettings()
     -- Generator function to create all the buttons.
     local function GeneratorFunction(owner, rootDescription)
         rootDescription:CreateTitle("Font Selection")
-        createButton(rootDescription, "Another Typewriter", Yipper.Constants.Fonts.TypeWriter)
-        createButton(rootDescription, "Blue Winter", Yipper.Constants.Fonts.BlueWinter)
-        createButton(rootDescription, "FrizQuadrata", Yipper.Constants.Fonts.FrizQuadrata)
-        createButton(rootDescription, "Morpheus", Yipper.Constants.Fonts.Morpheus)
+        for name, path in pairs(Yipper.Constants.Fonts) do
+            createButton(rootDescription, name, path)
+        end
     end
 
     -- Create and configure the DropDown.
@@ -367,7 +368,96 @@ function Yipper.UI.Settings:AddFontSelectionSettings()
 
     dropdown:SetText("Select Font")
     dropdown:SetSize(340, 20)
-    dropdown:SetPoint("TOPLEFT", 30, -260)
+    dropdown:SetPoint("TOPLEFT", 30, -310)
+    dropdown:SetupMenu(GeneratorFunction)
+    dropdown.Texture = dropdown:CreateTexture()
+    dropdown.Texture:SetAllPoints()
+    dropdown.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
+    dropdown.Texture:SetVertexColor(0, 0, 0)
+end
+
+-- Yipper.UI.Settings - AddNotificationColorPicker
+--
+-- Responsible for hooking up the UI components to be able to select the background
+-- color of the windows.
+function Yipper.UI.Settings:AddNotificationColorPicker()
+    local color = Yipper.DB.NotificationColor or Yipper.Constants.NotificationColor
+    local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
+
+    colorButton:SetSize(340, 20)
+    colorButton:SetPoint("TOPLEFT", 30, -250)
+    colorButton:SetText("Set Notification Color")
+    colorButton.Texture = colorButton:CreateTexture()
+    colorButton.Texture:SetAllPoints()
+    colorButton.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
+    colorButton.Texture:SetVertexColor(color.r, color.g, color.b)
+
+    colorButton:SetScript("OnClick", function(_)
+        local function OnColorChanged()
+            local red, green, blue = ColorPickerFrame:GetColorRGB()
+
+            -- Store the selected color
+            Yipper.DB.NotificationColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+
+            -- Update UI components
+            colorButton.Texture:SetVertexColor(red, green, blue)
+        end
+
+        local function OnCancel()
+            local red, green, blue = ColorPickerFrame:GetPreviousValues()
+
+            -- Store the selected color
+            Yipper.DB.NotificationColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+
+            -- Update UI components
+            colorButton.Texture:SetVertexColor(red, green, blue)
+        end
+
+        local storedColor = Yipper.DB.NotificationColor or Yipper.Constants.NotificationColor
+        local options = {
+            swatchFunc = OnColorChanged,
+            opacityFunc = OnColorChanged,
+            cancelFunc = OnCancel,
+            hasOpacity = false,
+            opacity = 100,
+            r = storedColor.r,
+            g = storedColor.g,
+            b = storedColor.b,
+        }
+
+        ColorPickerFrame:SetupColorPickerAndShow(options)
+    end)
+end
+
+-- Yipper.UI.Settings - NotificationSelectionSettings
+--
+-- Responsible for hooking up the UI components to be able to control the
+-- notification sound.
+function Yipper.UI.Settings:NotificationSelectionSettings()
+    -- Generator function to construct the actual button
+    local createButton = function(root, soundName, soundId)
+        root:CreateButton(soundName, function(data)
+            Yipper.DB.NotificationSound = soundId
+        end)
+    end
+
+    -- Generator function to create all the buttons.
+    local function GeneratorFunction(owner, rootDescription)
+        rootDescription:CreateTitle("Notification Sound Selection")
+
+        for key, sound in pairs(Yipper.Constants.Sounds) do
+            createButton(rootDescription, sound.name, sound.id)
+        end
+
+        createButton(rootDescription, "None", nil)
+    end
+
+    -- Create and configure the DropDown.
+    local dropdown = CreateFrame("DropdownButton", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
+
+    dropdown:SetText("Select Notification Sound")
+    dropdown:SetSize(340, 20)
+    dropdown:SetPoint("TOPLEFT", 30, -280)
     dropdown:SetupMenu(GeneratorFunction)
     dropdown.Texture = dropdown:CreateTexture()
     dropdown.Texture:SetAllPoints()

@@ -39,7 +39,9 @@ function Yipper:OnEvent(event, ...)
                 ["BorderColor"] = Yipper.Constants.BlackColor,
                 ["Alpha"] = Yipper.Constants.Alpha,
                 ["FontSize"] = Yipper.Constants.FontSize,
-                ["SelectedFont"] = Yipper.Constants.Fonts.FrizQuadrata
+                ["SelectedFont"] = Yipper.Constants.Fonts.FrizQuadrata,
+                ["NotificationSound"] = nil,
+                ["NotificationColor"] = Yipper.Constants.NotificationColor
             }
         end
 

@@ -9,8 +9,8 @@ Yipper.Constants = {}
 
 -- Define the list of chat events we want to listen to
 Yipper.Constants.ChatEvents = {
-    "CHAT_MSG_EMOTE",           -- custom emotes
-    "CHAT_MSG_TEXT_EMOTE",      -- command emotes like /dance
+    "CHAT_MSG_EMOTE",
+    "CHAT_MSG_TEXT_EMOTE",
     "CHAT_MSG_GUILD",
     "CHAT_MSG_OFFICER",
     "CHAT_MSG_PARTY",
@@ -41,13 +41,27 @@ Yipper.Constants.ChatColors = {
     ["CHAT_MSG_SYSTEM"] = { ["r"] = 255, ["g"] = 255, ["b"] = 0 }
 }
 
-Yipper.Constants.Fonts ={
+Yipper.Constants.Fonts = {
     ["TypeWriter"] = "Interface\\AddOns\\Yipper\\Fonts\\atwriter.ttf",
     ["BlueWinter"] = "Interface\\AddOns\\Yipper\\Fonts\\Blue Winter.ttf",
     ["FrizQuadrata"] = "Interface\\AddOns\\Yipper\\Fonts\\Friz Quadrata Regular.ttf",
     ["Morpheus"] = "Interface\\AddOns\\Yipper\\Fonts\\MORPHEUS.ttf"
 }
+
+Yipper.Constants.Sounds = {
+    ["TellMessage"] = { ["id"] = 3081, ["name"] = "Tell Message" },
+    ["MapPing"] = { ["id"] = 3175, ["name"] = "Map Ping" },
+    ["TutorialPopUp"] = { ["id"] = 7355, ["name"] = "Tutorial Popup" },
+    ["KeyringOpen"] = { ["id"] = 8938, ["name"] = "Keyring Open" },
+    ["KeyringClose"] = { ["id"] = 8939, ["name"] = "Keyring Close" },
+    ["AlarmTwo"] = { ["id"] = 12867, ["name"] = "Alarm 2" },
+    ["AlarmThree"] = { ["id"] = 12889, ["name"] = "Alarm 3" },
+    ["SilithidAggro"] = { ["id"] = 719, ["name"] = "Silithid Wasp Aggro" },
+    ["SuccubusStand"] = { ["id"] = 1121, ["name"] = "Succubus Stand" }
+}
+
 Yipper.Constants.BlackColor = { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
+Yipper.Constants.NotificationColor = { ["r"] = 255, ["g"] = 0, ["b"] = 0 }
 Yipper.Constants.Alpha = 100
 Yipper.Constants.FontSize = 12
 Yipper.Constants.CommsChannel = "YipperComms"

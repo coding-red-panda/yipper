@@ -251,10 +251,12 @@ function Yipper.UI:UpdateDisplayedText()
                 message = player .. " " .. messageData.message
             end
 
+            local colorizedMessage = Yipper.Utils:ColorizeMessage(messageData.message)
+
             -- Add the message with the correct color codes.
             -- The method needs values between 0 - 1, so divide the values by 255.
             Yipper.messageFrame:AddMessage(
-                message,
+                colorizedMessage,
                 colorCodes.r / 255,
                 colorCodes.g / 255,
                 colorCodes.b / 255,

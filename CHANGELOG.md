@@ -1,5 +1,11 @@
 ﻿# Yipper Changelog
 
+# 1.2.0
+
+- Added notification sound when message with player name is received
+- Added support for setting the notification sound
+- Added support for setting the notification color
+
 # 1.1.6
 
 - Added a slider to set the font-size of the message text

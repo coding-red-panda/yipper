@@ -30,7 +30,14 @@ function Yipper.Events:OnEvent(event, ...)
         local message, sender, _, _, _, _, _, _, _, _, lineId = ...
         self:StoreMessage(message, sender, lineId, event)
     elseif event == "CHAT_MSG_EMOTE" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
+        local message, sender, _, _, _, _, _, _, _, _, lineId, guid = ...
+
+        -- Fix the message to include the sender's name.
+        -- TODO: Support TRP3 Profiles
+        local unitToken = UnitTokenFromGUID(guid)
+        local name = UnitName(unitToken)
+        message = name .. " " .. message
+
         self:StoreMessage(message, sender, lineId, event)
     elseif event == "CHAT_MSG_GUILD" then
         local message, sender, _, _, _, _, _, _, _, _, lineId = ...
@@ -151,6 +158,9 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
         table.remove(Yipper.DB.Messages, 1)
     end
 
+    -- Play the notification sound if required.
+    Yipper.Utils:PlayNotification(message)
+
     -- Push the message into the messageFrame if the sender is the user currently
     -- being tracked.
     if sender == Yipper.TrackedPlayer then
@@ -159,9 +169,12 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
         -- Check if we're at the bottom
         local wasAtBottom = Yipper.messageFrame:AtBottom()
 
+        -- Colorize the message before displaying it
+        local coloredMessage = Yipper.Utils:ColorizeMessage(message)
+
         -- Add the message with the correct color codes.
         -- The method needs values between 0 - 1, so divide the values by 255.
-        Yipper.messageFrame:AddMessage(message, colorCodes.r / 255, colorCodes.g / 255, colorCodes.b / 255, lineId)
+        Yipper.messageFrame:AddMessage(coloredMessage, colorCodes.r / 255, colorCodes.g / 255, colorCodes.b / 255, lineId)
 
         if not wasAtBottom then
             Yipper.messageFrame:ScrollUp()
@@ -179,7 +192,7 @@ end
 -- Important: This method is called by a Ticker every 0.1 seconds!
 function Yipper.Events:UpdateTrackedPlayer()
     -- Variable for tracking the new potential target
-    local newTrackedPlayer = nil
+    local newTrackedPlayer
 
     -- Hovering takes precedence, if we're hovering over a player,
     -- that will be our new target.
