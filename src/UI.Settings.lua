@@ -86,6 +86,7 @@ function Yipper.UI.Settings:Init()
     self:AddFontSelectionSettings()
     self:AddNotificationColorPicker()
     self:NotificationSelectionSettings()
+    self:KeywordSettings()
 
     -- Define a custom toggle function
     Yipper.settingsFrame.Toggle = function(self)
@@ -463,4 +464,33 @@ function Yipper.UI.Settings:NotificationSelectionSettings()
     dropdown.Texture:SetAllPoints()
     dropdown.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
     dropdown.Texture:SetVertexColor(0, 0, 0)
+end
+
+-- Yipper.UI.Settings - KeywordSettings
+--
+-- This function is responsible for generating the UI components to set the
+-- additional keywords on which additional notifications should happen.
+-- These keywords are separated by commas, and treated as is.
+function Yipper.UI.Settings:KeywordSettings()
+    local editBox = CreateFrame("EditBox", nil, Yipper.settingsFrame)
+
+    Mixin(editBox, BackdropTemplateMixin)
+
+    editBox:SetFontObject(ChatFontNormal)
+    editBox:SetBackdrop(backdropConfiguration)
+    editBox:SetBackdropColor(0, 0, 0, 1)
+    editBox:SetBackdropBorderColor(0.4, 0.4, 0.4, 1)
+    editBox:SetTextInsets(4, 4, 3, 3)
+    editBox:EnableMouse(true)
+    editBox:SetMultiLine(true)
+    editBox:SetSize(340, 1)
+    editBox:SetPoint("TOPLEFT", 30, -360)
+    editBox:SetText(Yipper.DB.Keywords or "", ",")
+    editBox:SetScript("OnEditFocusLost", function(self)
+        Yipper.DB.Keywords = self:GetText()
+    end)
+    editBox.Label = editBox:CreateFontString(nil, "BORDER", "GameFontNormal")
+    editBox.Label:SetJustifyH("RIGHT")
+    editBox.Label:SetPoint("CENTER", editBox, "TOP", 0, 10)
+    editBox.Label:SetText("Additional Keywords")
 end

@@ -1,5 +1,12 @@
 ﻿# Yipper Changelog
 
+# 1.3.0
+
+- Added support for tracking keywords in messages
+- Keyword and player names are now highlighted properly
+- partial matching supported
+- The same logic is also applied to sound notifications
+
 # 1.2.0
 
 - Added notification sound when message with player name is received
