@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.3.2
+
+- Use `GetPlayerInfoByGUID` instead of `UnitTokenFromGUID`
+
 # 1.3.1
 
 - Fixed a bug where the highlighting went haywire if no keywords were set.

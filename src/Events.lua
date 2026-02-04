@@ -34,8 +34,7 @@ function Yipper.Events:OnEvent(event, ...)
 
         -- Fix the message to include the sender's name.
         -- TODO: Support TRP3 Profiles
-        local unitToken = UnitTokenFromGUID(guid)
-        local name = UnitName(unitToken)
+        local _, _, _, _, _, name, _ = GetPlayerInfoByGUID(guid)
         message = name .. " " .. message
 
         self:StoreMessage(message, sender, lineId, event)
