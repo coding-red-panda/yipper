@@ -20,13 +20,18 @@ function Yipper.Utils:ColorizeMessage(message)
 
     local playerName = UnitName("player")
     local color = Yipper.DB.NotificationColor or Yipper.Constants.NotificationColor
-    local colorCode = string.format("%02X%02X%02X", color.r * 255, color.g * 255, color.b * 255)
+    local colorCode = string.format("%02X%02X%02X", color.r, color.g, color.b)
     local tagStart = "\124cFF"
     local tagEnd = "\124r"
 
     -- Colorize player name
     if string.find(string.lower(message), string.lower(playerName), 1, true) then
         message = self:ReplaceInsensitiveWithColor(message, playerName, tagStart .. colorCode, tagEnd)
+    end
+
+    -- Safeguard the keywords missing/empty
+    if Yipper.DB.Keywords == nil or Yipper.DB.Keywords == "" then
+        return message
     end
 
     -- Colorize keywords
@@ -51,7 +56,6 @@ function Yipper.Utils:PlayNotification(message)
     -- If no notification sound has been set,
     -- return as we can't notify the user with a sound.
     if not Yipper.DB.NotificationSound then
-        print("No Notification Sound")
         return
     end
 
@@ -62,7 +66,7 @@ function Yipper.Utils:PlayNotification(message)
         shouldNotify = true
     end
 
-    if not shouldNotify and Yipper.DB.Keywords then
+    if not shouldNotify and Yipper.DB.Keywords and Yipper.DB.Keywords ~= "" then
         local keywords = self:SplitString(Yipper.DB.Keywords, ",")
 
         for i, value in ipairs(keywords) do
