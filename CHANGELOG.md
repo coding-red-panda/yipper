@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.3.3
+
+- Stop sending notification sounds for your own messages.
+
 # 1.3.2
 
 - Use `GetPlayerInfoByGUID` instead of `UnitTokenFromGUID`

@@ -20,7 +20,7 @@ function Yipper.Utils:ColorizeMessage(message)
 
     local playerName = UnitName("player")
     local color = Yipper.DB.NotificationColor or Yipper.Constants.NotificationColor
-    local colorCode = string.format("%02X%02X%02X", color.r, color.g, color.b)
+    local colorCode = string.format("%02X%02X%02X", color.r * 255, color.g * 255, color.b * 255)
     local tagStart = "\124cFF"
     local tagEnd = "\124r"
 

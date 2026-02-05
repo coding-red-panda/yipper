@@ -61,7 +61,7 @@ Yipper.Constants.Sounds = {
 }
 
 Yipper.Constants.BlackColor = { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
-Yipper.Constants.NotificationColor = { ["r"] = 255, ["g"] = 0, ["b"] = 0 }
+Yipper.Constants.NotificationColor = { ["r"] = 1, ["g"] = 0, ["b"] = 0 }
 Yipper.Constants.Alpha = 100
 Yipper.Constants.FontSize = 12
 Yipper.Constants.CommsChannel = "YipperComms"
