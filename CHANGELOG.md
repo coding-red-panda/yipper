@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.4.0
+
+- Disable event processing during loading screens to avoid corrupt data.
+
 # 1.3.3
 
 - Stop sending notification sounds for your own messages.

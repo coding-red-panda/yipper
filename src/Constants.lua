@@ -22,7 +22,9 @@ Yipper.Constants.ChatEvents = {
     "CHAT_MSG_SAY",
     "CHAT_MSG_WHISPER",
     "CHAT_MSG_SYSTEM",
-    "CHAT_MSG_ADDON_LOGGED"
+    "CHAT_MSG_ADDON_LOGGED",
+    "LOADING_SCREEN_ENABLED",
+    "LOADING_SCREEN_DISABLED"
 }
 
 Yipper.Constants.ChatColors = {

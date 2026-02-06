@@ -77,6 +77,11 @@ function Yipper:OnEvent(event, ...)
         end
     elseif event == "PLAYER_LOGOUT" then
         YipperDB = Yipper.DB
+    elseif event == "LOADING_SCREEN_ENABLED" then
+        Yipper.EventQueue.isLoadingScreen = true
+    elseif event == "LOADING_SCREEN_DISABLED" then
+        Yipper.EventQueue.isLoadingScreen = false
+        Yipper.EventQueue:ProcessQueue()
     else
         -- Check if it is a chat event
         local isChatEvent = false
@@ -89,8 +94,16 @@ function Yipper:OnEvent(event, ...)
             end
         end
 
+        -- Only process the event if it's a chat event, and processing has not been
+        -- disabled because we're in a loading screen.
+        -- In Loading screens, we cannot rely on methods like GetNormalizedRealmName
+        -- to return information.
         if isChatEvent and Yipper.Events then
-            Yipper.Events:OnEvent(event, ...)
+            if Yipper.EventQueue.isLoadingScreen then
+                Yipper.EventQueue:QueueEvent(event, ...)
+            else
+                Yipper.Events:OnEvent(event, ...)
+            end
         end
     end
 end
