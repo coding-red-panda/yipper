@@ -3,3 +3,8 @@
 manual-changelog:
     filename: CHANGELOG.md
     markup-type: markdown
+
+ignore:
+    - /images/settings.png
+    - /README.md
+    - /LICENSE

@@ -47,6 +47,15 @@ The Settings window allows you to configure the following settings:
 * The alpha/transparency of the windows
 * The background color of the windows
 * The border color of the windows
+* Keyword tracking
+* Notification sounds
+
+## Keyword Tracking
+
+The keywords are case-insensitive and can be configured individually for each player.
+They need to be separated by a comma.
+
+![Settings](images/settings.png)
 
 ## Slash Commands
 The AddOn provides the following slash commands: `/yip` or /`yipper`

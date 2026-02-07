@@ -490,5 +490,5 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox.Label = editBox:CreateFontString(nil, "BORDER", "GameFontNormal")
     editBox.Label:SetJustifyH("RIGHT")
     editBox.Label:SetPoint("CENTER", editBox, "TOP", 0, 10)
-    editBox.Label:SetText("Additional Keywords")
+    editBox.Label:SetText("Additional Keywords - comma separated")
 end
