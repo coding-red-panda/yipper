@@ -79,6 +79,7 @@ function Yipper.UI.Settings:Init()
     -- Offload the creation of settings to specific functions
     -- Keeps our code here manageable
     self:AddMinimapSettings()
+    self:AddHeaderSettings()
     self:AddAlphaSettings()
     self:AddBackgroundColorPicker()
     self:AddBorderColorPicker()
@@ -141,6 +142,32 @@ function Yipper.UI.Settings:RestorePosition()
     end
 end
 
+-- Yipper.UI.Settings - AddHeaderSettings
+--
+-- Responsible for hooking up the UI components to be able to toggle
+-- the header of the mainFrame. Some users like to hide this.
+function Yipper.UI.Settings:AddHeaderSettings()
+    local checkbox = CreateFrame("CheckButton", nil, Yipper.settingsFrame, "ChatCOnfigCheckButtonTemplate")
+
+    checkbox:SetChecked(Yipper.DB.ShowHeader)
+    checkbox:SetPoint("TOPLEFT", 200, -35)
+    checkbox.Text:SetText("Toggle Header")
+    checkbox.tooltip = "Toggle the visibility of the Yipper Header"
+    checkbox:HookScript("OnClick", function(self)
+        Yipper.DB.ShowHeader = self:GetChecked()
+
+        if self:GetChecked() then
+            Yipper.headerFrame:Show()
+            Yipper.closeButton:Show()
+            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -(Yipper.headerFrame:GetHeight() + 10))
+        else
+            Yipper.headerFrame:Hide()
+            Yipper.closeButton:Hide()
+            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -10)
+        end
+    end)
+end
+
 -- Yipper.UI.Settings - AddMinimapSettings
 --
 -- Responsible for hooking up the UI components to be able to toggle
@@ -150,7 +177,7 @@ function Yipper.UI.Settings:AddMinimapSettings()
 
     checkbox:SetChecked(Yipper.DB.EnableMinimapButton)
     checkbox:SetPoint("TOPLEFT", 30, -35)
-    checkbox.Text:SetText("Toggle Minimap Button")
+    checkbox.Text:SetText("Toggle Minimap")
     checkbox.tooltip = "Toggle the visibility of the Yipper Minimap Button"
     checkbox:HookScript("OnClick", function(self)
         Yipper.DB.EnableMinimapButton = self:GetChecked()

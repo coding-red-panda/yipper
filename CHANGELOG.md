@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 1.5.3
+
+- Header is now stylized
+- Header can now be hidden
+
 ## 1.5.2
 
 - Don't use Insets for padding

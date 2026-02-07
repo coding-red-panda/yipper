@@ -63,6 +63,11 @@ function Yipper.UI:Init()
         Yipper.DB.ShowWindow = false
     end)
 
+    -- Hide the closeButton when not used
+    if not Yipper.DB.ShowHeader then
+        closeButton:Hide()
+    end
+
     -- Header (tracks Yipper.TrackedPlayer)
     local headerHeight = 30
     local headerRightInset = 45 -- keeps text clear of close button and the scrollbar gutter
@@ -84,6 +89,11 @@ function Yipper.UI:Init()
     headerFrame:SetScript("OnUpdate", function()
         Yipper.UI:UpdateHeaderText()
     end)
+
+    -- Hide the headerFrame if the option is disabled
+    if not Yipper.DB.ShowHeader then
+        headerFrame:Hide()
+    end
 
     -- Create scroll frame
     local messageFrame = CreateFrame("ScrollingMessageFrame", nil, Yipper.mainFrame)
@@ -123,6 +133,7 @@ function Yipper.UI:Init()
     Yipper.messageFrame = messageFrame
     Yipper.headerFrame = headerFrame
     Yipper.headerText = headerText
+    Yipper.closeButton = closeButton
 
     -- Create resize button (bottom-right corner)
     local resizeButton = CreateFrame("Button", nil, Yipper.mainFrame)

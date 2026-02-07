@@ -41,7 +41,8 @@ function Yipper:OnEvent(event, ...)
                 ["FontSize"] = Yipper.Constants.FontSize,
                 ["SelectedFont"] = Yipper.Constants.Fonts.FrizQuadrata,
                 ["NotificationSound"] = nil,
-                ["NotificationColor"] = Yipper.Constants.NotificationColor
+                ["NotificationColor"] = Yipper.Constants.NotificationColor,
+                ["ShowHeader"] = true
             }
         -- If the YipperDB variable has been loaded for the character,
         -- assign it to the internal DB so the AddOn has its settings
