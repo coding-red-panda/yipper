@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+# 1.4.2
+
+- Changing the Alpha settings only affects the tracking window.
+
 # 1.4.1
 
 - Messages are now timestamped in the message list.

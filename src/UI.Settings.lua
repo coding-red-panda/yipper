@@ -188,8 +188,6 @@ function Yipper.UI.Settings:AddAlphaSettings()
 
         Yipper.mainFrame:SetBackdropColor(0, 0, 0, value / 100)
         Yipper.mainFrame:SetBackdropBorderColor(0.4, 0.4, 0.4, (Yipper.DB.WindowAlpha or 100) / 100)
-        Yipper.settingsFrame:SetBackdropColor(0, 0, 0, value / 100)
-        Yipper.settingsFrame:SetBackdropBorderColor(0.4, 0.4, 0.4, (Yipper.DB.WindowAlpha or 100) / 100)
     end, slider)
 end
 

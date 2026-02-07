@@ -43,17 +43,15 @@ function Yipper:OnEvent(event, ...)
                 ["NotificationSound"] = nil,
                 ["NotificationColor"] = Yipper.Constants.NotificationColor
             }
-        end
-
         -- If the YipperDB variable has been loaded for the character,
         -- assign it to the internal DB so the AddOn has its settings
         -- loaded and available.
-        if YipperDB then
+        elseif YipperDB then
             Yipper.DB = YipperDB
 
             -- Wipe the past messages if Yipper has been updated.
             -- This avoids weird behavior in updates when we change stuff.
-            if not Yipper.DB.Version or Yipper.Utils:IsUpdated(Yipper.DB.Version) then
+            if (not Yipper.DB.Version) or Yipper.Utils:IsUpdated(Yipper.DB.Version) then
                 Yipper.DB.Version = Yipper.Constants.VERSION
                 Yipper.DB.Messages = { }
             end
