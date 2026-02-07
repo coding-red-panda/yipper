@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.0
+
+- Play a preview sound when selecting the notification sound.
+
 ## 1.4.3
 
 - Explain the usage of keywords better.

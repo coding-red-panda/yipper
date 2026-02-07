@@ -433,22 +433,50 @@ end
 -- Responsible for hooking up the UI components to be able to control the
 -- notification sound.
 function Yipper.UI.Settings:NotificationSelectionSettings()
-    -- Generator function to construct the actual button
-    local createButton = function(root, soundName, soundId)
-        root:CreateButton(soundName, function(data)
+    -- Local function to determine whether a button is selected based upon their index.
+    -- We use the index to determine the sound ID, if it matches what's currently selected
+    -- then flag the radio button as selected.
+    local function IsSelected(index)
+        if index == "None" then
+            return Yipper.DB.NotificationSound == nil
+        else
+            return Yipper.DB.NotificationSound == Yipper.Constants.Sounds[index].id
+        end
+    end
+
+    -- Local function to determine what to do when a button is selected.
+    -- The index is the name of the key in our sound table.
+    -- Set the ID and play sound on selection as preview.
+    local function SetSelected(index)
+        if index == "None" then
+            Yipper.DB.NotificationSound = nil
+        else
+            local soundId = Yipper.Constants.Sounds[index].id
+
             Yipper.DB.NotificationSound = soundId
-        end)
+
+            -- If a soundId was selected, play the sound.
+            if soundId then
+                PlaySound(soundId)
+            end
+        end
     end
 
     -- Generator function to create all the buttons.
     local function GeneratorFunction(owner, rootDescription)
+        -- Set the Title
         rootDescription:CreateTitle("Notification Sound Selection")
 
+        -- Generate the radio buttons
         for key, sound in pairs(Yipper.Constants.Sounds) do
-            createButton(rootDescription, sound.name, sound.id)
+            rootDescription:CreateRadio(sound.name, IsSelected, SetSelected, key)
         end
 
-        createButton(rootDescription, "None", nil)
+        -- Add a Divider
+        rootDescription:CreateDivider()
+
+        -- Add the "None" button
+        rootDescription:CreateRadio("None", IsSelected, SetSelected, "None")
     end
 
     -- Create and configure the DropDown.
