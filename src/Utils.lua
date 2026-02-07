@@ -57,6 +57,35 @@ function Yipper.Utils:IsUpdated(version)
     return yipper_patch > patch
 end
 
+-- Yipper.Utils - ColorizeQuotes
+--
+-- Finds quoted text in the message and ensures that it is displayed in the color
+-- of a normal say message.
+-- This function should only be called when dealing with emote messages.
+function Yipper.Utils:ColorizeQuotes(message)
+    -- Don't bother editing the message if we can't work with it.
+    if issecretvalue(message) and not canaccessvalue(message) then
+        return message
+    end
+
+    -- Get the color for quoted text (CHAT_MSG_SAY)
+    local color = Yipper.Constants.ChatColors["CHAT_MSG_SAY"]
+    local colorCode = string.format("%02X%02X%02X", color.r, color.g, color.b)
+    local tagStart = "\124cFF"
+    local tagEnd = "\124r"
+
+    -- Pattern to match text within quotes
+    -- This will match both "double quotes" and handle escaped quotes if needed
+    local pattern = '"([^"]+)"'
+
+    -- Replace all quoted text with colorized version
+    message = string.gsub(message, pattern, function(quotedText)
+        return '"' .. tagStart .. colorCode .. quotedText .. tagEnd .. '"'
+    end)
+
+    return message
+end
+
 -- Yipper.Utils - ColorizeMessage
 --
 -- Colors the message by finding the player's name and making sure it pops out.

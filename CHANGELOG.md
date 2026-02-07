@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.1
+
+- Quoted text in emote-messages is now highlighted properly.
+
 ## 1.5.0
 
 - Play a preview sound when selecting the notification sound.

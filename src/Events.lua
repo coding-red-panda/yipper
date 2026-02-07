@@ -37,6 +37,11 @@ function Yipper.Events:OnEvent(event, ...)
         local _, _, _, _, _, name, _ = GetPlayerInfoByGUID(guid)
         message = name .. " " .. message
 
+        -- Before storing the message, find the quoted parts
+        -- and colorize them with the correct color.
+        message = Yipper.Utils:ColorizeQuotes(message)
+
+        -- Store the message and process it
         self:StoreMessage(message, sender, lineId, event)
     elseif event == "CHAT_MSG_GUILD" then
         local message, sender, _, _, _, _, _, _, _, _, lineId = ...
