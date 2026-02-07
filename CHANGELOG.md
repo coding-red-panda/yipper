@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 1.5.4
+
+- Fixed the styling of the header
+- Rewrote UI code to be more manageable
+
 ## 1.5.3
 
 - Header is now stylized

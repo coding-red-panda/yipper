@@ -53,68 +53,77 @@ function Yipper.UI:Init()
     Yipper.mainFrame:SetResizable(true)
     Yipper.mainFrame:SetResizeBounds(200, 150, 800, 600)  -- minWidth, minHeight, maxWidth, maxHeight
 
-    -- Create close button (top-right corner)
-    local closeButton = CreateFrame("Button", nil, Yipper.mainFrame, "UIPanelCloseButton")
+    --------------------------------------------------------------------------------------------------------------------
+    -- Header Frame
+    --
+    -- Tracks Yipper.TrackedPlayer
+    --------------------------------------------------------------------------------------------------------------------
+    Yipper.headerFrame = CreateFrame("Frame", nil, Yipper.mainFrame)
 
-    closeButton:SetPoint("TOPRIGHT", Yipper.mainFrame, "TOPRIGHT", -2, -2)
-    closeButton:SetSize(20, 20)
-    closeButton:SetScript("OnClick", function()
+    -- Give it a background color
+    Yipper.headerBg = Yipper.headerFrame:CreateTexture(nil, "BACKGROUND")
+    Yipper.headerBg:SetAllPoints(Yipper.headerFrame)
+    Yipper.headerBg:SetColorTexture(0.16, 0.52, 0.92, 0.5) -- #2A84EB with 50% Alpha
+
+    -- Set the points of the Frame.
+    Yipper.headerFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 2, -2)
+    Yipper.headerFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "TOPRIGHT", -2, -30)
+
+    -- Add the header text, this will be used for tracking the player.
+    Yipper.headerText = Yipper.headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    Yipper.headerText:SetPoint("TOPLEFT", Yipper.headerFrame, "TOPLEFT", 0, 0)
+    Yipper.headerText:SetPoint("BOTTOMRIGHT", Yipper.headerFrame, "BOTTOMRIGHT", -30, 0)
+    Yipper.headerText:SetJustifyH("LEFT")
+    Yipper.headerText:SetJustifyV("MIDDLE")
+
+    -- Set the scripts for the text
+    Yipper.headerFrame:SetScript("OnShow", function()
+        Yipper.UI:UpdateHeaderText()
+    end)
+    Yipper.headerFrame:SetScript("OnUpdate", function()
+        Yipper.UI:UpdateHeaderText()
+    end)
+
+    -- Create close button (top-right corner)
+    Yipper.closeButton = CreateFrame("Button", nil, Yipper.headerFrame)
+    Yipper.closeButton:SetPoint("TOPRIGHT", Yipper.headerFrame, "TOPRIGHT", -2, -5)
+    Yipper.closeButton:SetSize(20, 20)
+
+    -- Add the "X" text to close the button
+    local closeText = Yipper.closeButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    closeText:SetText("|cffffffff×|r")  -- or use "X" for a regular X
+    closeText:SetPoint("CENTER")
+
+    Yipper.closeButton:SetScript("OnClick", function()
         Yipper.mainFrame:Hide()
         Yipper.DB.ShowWindow = false
     end)
 
-    -- Hide the closeButton when not used
-    if not Yipper.DB.ShowHeader then
-        closeButton:Hide()
-    end
-
-    -- Header (tracks Yipper.TrackedPlayer)
-    local headerHeight = 30
-    local headerRightInset = 45 -- keeps text clear of close button and the scrollbar gutter
-
-    local headerFrame = CreateFrame("Frame", nil, Yipper.mainFrame)
-    headerFrame:SetHeight(headerHeight)
-    headerFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 6, -4)
-    headerFrame:SetPoint("TOPRIGHT", Yipper.mainFrame, "TOPRIGHT", -headerRightInset, -4)
-
-    local headerText = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    headerText:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", 0, 0)
-    headerText:SetPoint("BOTTOMRIGHT", headerFrame, "BOTTOMRIGHT", 0, 0)
-    headerText:SetJustifyH("LEFT")
-    headerText:SetJustifyV("MIDDLE")
-
-    headerFrame:SetScript("OnShow", function()
-        Yipper.UI:UpdateHeaderText()
-    end)
-    headerFrame:SetScript("OnUpdate", function()
-        Yipper.UI:UpdateHeaderText()
-    end)
-
     -- Hide the headerFrame if the option is disabled
     if not Yipper.DB.ShowHeader then
-        headerFrame:Hide()
+        Yipper.headerFrame:Hide()
     end
 
     -- Create scroll frame
-    local messageFrame = CreateFrame("ScrollingMessageFrame", nil, Yipper.mainFrame)
+    Yipper.messageFrame = CreateFrame("ScrollingMessageFrame", nil, Yipper.mainFrame)
 
-    Mixin(messageFrame, BackdropTemplateMixin)
+    Mixin(Yipper.messageFrame, BackdropTemplateMixin)
 
-    messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -(headerHeight + 10))     -- below header
-    messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -10, 24)              -- above resize grip area
-    messageFrame:SetFont(Yipper.Constants.Fonts.FrizQuadrata, Yipper.DB.FontSize or Yipper.Constants.FontSize, "")
-    messageFrame:SetJustifyH("LEFT")
-    messageFrame:SetInsertMode("BOTTOM")
-    messageFrame:SetFading(false)
-    messageFrame:SetMaxLines(Yipper.DB.MaxMessages)
-    messageFrame:SetHyperlinksEnabled(true) -- Allow links
+    Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -(Yipper.headerFrame:GetHeight() + 10))
+    Yipper.messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -10, 24)
+    Yipper.messageFrame:SetFont(Yipper.Constants.Fonts.FrizQuadrata, Yipper.DB.FontSize or Yipper.Constants.FontSize, "")
+    Yipper.messageFrame:SetJustifyH("LEFT")
+    Yipper.messageFrame:SetInsertMode("BOTTOM")
+    Yipper.messageFrame:SetFading(false)
+    Yipper.messageFrame:SetMaxLines(Yipper.DB.MaxMessages)
+    Yipper.messageFrame:SetHyperlinksEnabled(true) -- Allow links
 
     -- Assume the user is at the bottom by default
-    messageFrame.isAtBottom = true
+    Yipper.messageFrame.isAtBottom = true
 
     -- Enable Scroll behavior with the mouse wheel
-    messageFrame:EnableMouseWheel(true)
-    messageFrame:SetScript("OnMouseWheel", function(self, delta)
+    Yipper.messageFrame:EnableMouseWheel(true)
+    Yipper.messageFrame:SetScript("OnMouseWheel", function(self, delta)
 
         if delta > 0 then
             self:ScrollUp()
@@ -125,31 +134,25 @@ function Yipper.UI:Init()
         end
     end)
 
-    messageFrame:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground" })
-    messageFrame:SetBackdropColor(0, 0, 0, 0)
-    messageFrame:Show()
-
-    -- Store references for later use
-    Yipper.messageFrame = messageFrame
-    Yipper.headerFrame = headerFrame
-    Yipper.headerText = headerText
-    Yipper.closeButton = closeButton
+    Yipper.messageFrame:SetBackdrop({ bgFile = "Interface/ChatFrame/ChatFrameBackground" })
+    Yipper.messageFrame:SetBackdropColor(0, 0, 0, 0)
+    Yipper.messageFrame:Show()
 
     -- Create resize button (bottom-right corner)
-    local resizeButton = CreateFrame("Button", nil, Yipper.mainFrame)
-    resizeButton:SetSize(16, 16)
-    resizeButton:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -2, 2)
-    resizeButton:EnableMouse(true)
-    resizeButton:RegisterForDrag("LeftButton")
+    Yipper.resizeButton = CreateFrame("Button", nil, Yipper.mainFrame)
+    Yipper.resizeButton:SetSize(16, 16)
+    Yipper.resizeButton:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -2, 2)
+    Yipper.resizeButton:EnableMouse(true)
+    Yipper.resizeButton:RegisterForDrag("LeftButton")
 
     -- Visual indicator for resize handle
-    resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-    resizeButton:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-    resizeButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-    resizeButton:SetScript("OnDragStart", function()
+    Yipper.resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+    Yipper.resizeButton:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    Yipper.resizeButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    Yipper.resizeButton:SetScript("OnDragStart", function()
         Yipper.mainFrame:StartSizing("BOTTOMRIGHT")
     end)
-    resizeButton:SetScript("OnDragStop", function()
+    Yipper.resizeButton:SetScript("OnDragStop", function()
         Yipper.mainFrame:StopMovingOrSizing()
         Yipper.UI:SavePosition()  -- Save after resizing
     end)

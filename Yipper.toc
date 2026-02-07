@@ -1,5 +1,5 @@
 ## Interface: 120000, 110207
-## Version: 1.5.2
+## Version: 1.5.4
 ## Title: Yipper
 ## Notes: AddOn to track chat messages from players
 ## Author: Keento
