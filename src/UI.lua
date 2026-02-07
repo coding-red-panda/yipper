@@ -71,7 +71,7 @@ function Yipper.UI:Init()
 
     -- Add the header text, this will be used for tracking the player.
     Yipper.headerText = Yipper.headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    Yipper.headerText:SetPoint("TOPLEFT", Yipper.headerFrame, "TOPLEFT", 0, 0)
+    Yipper.headerText:SetPoint("TOPLEFT", Yipper.headerFrame, "TOPLEFT", 10, 0)
     Yipper.headerText:SetPoint("BOTTOMRIGHT", Yipper.headerFrame, "BOTTOMRIGHT", -30, 0)
     Yipper.headerText:SetJustifyH("LEFT")
     Yipper.headerText:SetJustifyV("MIDDLE")
