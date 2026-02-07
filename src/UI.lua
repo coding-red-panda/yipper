@@ -109,7 +109,12 @@ function Yipper.UI:Init()
 
     Mixin(Yipper.messageFrame, BackdropTemplateMixin)
 
-    Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -(Yipper.headerFrame:GetHeight() + 10))
+    -- Set the top point based on the visibility of the header.
+    if Yipper.DB.ShowHeader then
+        Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -30)
+    else
+        Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -5)
+    end
     Yipper.messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -10, 24)
     Yipper.messageFrame:SetFont(Yipper.Constants.Fonts.FrizQuadrata, Yipper.DB.FontSize or Yipper.Constants.FontSize, "")
     Yipper.messageFrame:SetJustifyH("LEFT")

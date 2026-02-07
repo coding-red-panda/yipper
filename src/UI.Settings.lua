@@ -158,10 +158,10 @@ function Yipper.UI.Settings:AddHeaderSettings()
 
         if self:GetChecked() then
             Yipper.headerFrame:Show()
-            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -(Yipper.headerFrame:GetHeight() + 10))
+            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -30)
         else
             Yipper.headerFrame:Hide()
-            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, 0)
+            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -5)
         end
     end)
 end
