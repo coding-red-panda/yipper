@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.5
+
+- Fix height calculation of the message list
+
 ## 1.5.4
 
 - Fixed the styling of the header
