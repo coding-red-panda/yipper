@@ -7,6 +7,56 @@ local addonName, Yipper = ...
 -- Initialize the module
 Yipper.Utils = {}
 
+-- Yipper.Utils - TimestampMessage
+--
+-- Puts a timestamp in front of the message using the moment in time that the function is called.
+-- This allows us to preserve timestamp history between sessions, since the Window itself will be
+-- bound to the system after reloads.
+function Yipper.Utils:TimestampMessage(message)
+    local time_string = date("%H:%M")
+
+    return "[" .. time_string .. "] " .. message
+end
+
+-- Yipper.Utils - IsUpdated
+--
+-- Returns a boolean if Yipper has been updated.
+-- Takes a semantic version, and returns true if the provided version is older than the
+-- Yipper version.
+function Yipper.Utils:IsUpdated(version)
+    -- Parse the input version
+    local major, minor, patch = version:match("^(%d+)%.(%d+)%.(%d+)$")
+
+    -- If we can't extract the version somehow, return false.
+    if not major then
+        return false
+    end
+
+    -- Parse Yipper.VERSION
+    local yipper_major, yipper_minor, yipper_patch = Yipper.Constants.VERSION:match("^(%d+)%.(%d+)%.(%d+)$")
+
+    -- Convert to numbers for comparison
+    major, minor, patch = tonumber(major), tonumber(minor), tonumber(patch)
+    yipper_major, yipper_minor, yipper_patch = tonumber(yipper_major), tonumber(yipper_minor), tonumber(yipper_patch)
+
+    -- Compare versions
+    if yipper_major > major then
+        return true
+    elseif yipper_major < major then
+        return false
+    end
+
+    -- Major versions are equal, check minor
+    if yipper_minor > minor then
+        return true
+    elseif yipper_minor < minor then
+        return false
+    end
+
+    -- Major and minor are equal, check patch
+    return yipper_patch > patch
+end
+
 -- Yipper.Utils - ColorizeMessage
 --
 -- Colors the message by finding the player's name and making sure it pops out.

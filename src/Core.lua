@@ -50,6 +50,13 @@ function Yipper:OnEvent(event, ...)
         -- loaded and available.
         if YipperDB then
             Yipper.DB = YipperDB
+
+            -- Wipe the past messages if Yipper has been updated.
+            -- This avoids weird behavior in updates when we change stuff.
+            if not Yipper.DB.Version or Yipper.Utils:IsUpdated(Yipper.DB.Version) then
+                Yipper.DB.Version = Yipper.Constants.VERSION
+                Yipper.DB.Messages = { }
+            end
         end
 
         if Yipper.Comms then

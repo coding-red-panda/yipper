@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+# 1.4.1
+
+- Messages are now timestamped in the message list.
+- AddOn tracks its version now
+
 # 1.4.0
 
 - Disable event processing during loading screens to avoid corrupt data.

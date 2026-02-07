@@ -144,6 +144,9 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
         Yipper.DB.Messages[sender] = { }
     end
 
+    -- Timestamp the message
+    message = Yipper.Utils:TimestampMessage(message)
+
     -- Inject the record in the table.
     table.insert(Yipper.DB.Messages[sender], {
         ["message"] = message,
