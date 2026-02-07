@@ -66,8 +66,8 @@ function Yipper.UI:Init()
     Yipper.headerBg:SetColorTexture(0.16, 0.52, 0.92, 0.5) -- #2A84EB with 50% Alpha
 
     -- Set the points of the Frame.
-    Yipper.headerFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 2, -2)
-    Yipper.headerFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "TOPRIGHT", -2, -30)
+    Yipper.headerFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 4, -3)
+    Yipper.headerFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "TOPRIGHT", -4, -30)
 
     -- Add the header text, this will be used for tracking the player.
     Yipper.headerText = Yipper.headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
