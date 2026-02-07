@@ -1,5 +1,11 @@
 ﻿# Yipper Changelog
 
+## 1.5.2
+
+- Don't use Insets for padding
+- Moved message scroll frame right point to do better "padding"
+- Moved message scroll frame left point to do better "padding"
+
 ## 1.5.1
 
 - Quoted text in emote-messages is now highlighted properly.

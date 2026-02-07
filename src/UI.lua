@@ -90,10 +90,9 @@ function Yipper.UI:Init()
 
     Mixin(messageFrame, BackdropTemplateMixin)
 
-    messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 6, -(headerHeight + 10))     -- below header
-    messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -6, 24)              -- above resize grip area
+    messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -(headerHeight + 10))     -- below header
+    messageFrame:SetPoint("BOTTOMRIGHT", Yipper.mainFrame, "BOTTOMRIGHT", -10, 24)              -- above resize grip area
     messageFrame:SetFont(Yipper.Constants.Fonts.FrizQuadrata, Yipper.DB.FontSize or Yipper.Constants.FontSize, "")
-    messageFrame:SetHitRectInsets(6, 7, 0, 0)
     messageFrame:SetJustifyH("LEFT")
     messageFrame:SetInsertMode("BOTTOM")
     messageFrame:SetFading(false)
