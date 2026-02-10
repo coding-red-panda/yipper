@@ -208,10 +208,14 @@ function Yipper.UI.Settings:AddAlphaSettings()
     slider:SetWidth(340, 20)
     slider:SetPoint("TOPLEFT", 30, -70)
     slider:Init(Yipper.DB.WindowAlpha or 100, options.minValue, options.maxValue, options.steps, options.formatters)
+
+    -- When the value changes, apply the alpha, but keep the color!
     slider:RegisterCallback("OnValueChanged", function(_, value)
         Yipper.DB.WindowAlpha = value
 
-        Yipper.mainFrame:SetBackdropColor(0, 0, 0, value / 100)
+        local color = Yipper.DB.BackgroundColor or Yipper.Constants.BlackColor
+
+        Yipper.mainFrame:SetBackdropColor(color.r, color.g, color.b, value / 100)
         Yipper.mainFrame:SetBackdropBorderColor(0.4, 0.4, 0.4, (Yipper.DB.WindowAlpha or 100) / 100)
     end, slider)
 end
@@ -264,7 +268,6 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
             opacityFunc = OnColorChanged,
             cancelFunc = OnCancel,
             hasOpacity = false,
-            opacity = 100,
             r = storedColor.r,
             g = storedColor.g,
             b = storedColor.b,
@@ -322,7 +325,6 @@ function Yipper.UI.Settings:AddBorderColorPicker()
             opacityFunc = OnColorChanged,
             cancelFunc = OnCancel,
             hasOpacity = false,
-            opacity = 100,
             r = storedColor.r,
             g = storedColor.g,
             b = storedColor.b,

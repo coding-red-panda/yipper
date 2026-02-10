@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 1.5.6
+
+- Fix background color not being applied
+- Requires re-setting the colors to apply properly.
+
 ## 1.5.5
 
 - Fix height calculation of the message list
