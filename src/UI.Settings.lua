@@ -538,10 +538,17 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox:SetMultiLine(true)
     editBox:SetSize(340, 1)
     editBox:SetPoint("TOPLEFT", 30, -360)
-    editBox:SetText(Yipper.DB.Keywords or "", ",")
+
+    -- Construct the text to display
+    local keywords = table.concat(Yipper.DB.Keywords, ",")
+    editBox:SetText(keywords or "", ",")
+
+    -- Set the script to save the data automatically when focus is lost
     editBox:SetScript("OnEditFocusLost", function(self)
-        Yipper.DB.Keywords = self:GetText()
+        Yipper.DB.Keywords = Yipper.Utils:SplitString(self:GetText(), ",")
     end)
+
+    -- Add a nice label to the box to explain the purpose.
     editBox.Label = editBox:CreateFontString(nil, "BORDER", "GameFontNormal")
     editBox.Label:SetJustifyH("RIGHT")
     editBox.Label:SetPoint("CENTER", editBox, "TOP", 0, 10)

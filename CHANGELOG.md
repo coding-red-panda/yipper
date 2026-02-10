@@ -1,5 +1,11 @@
 ﻿# Yipper Changelog
 
+## 1.5.7
+
+- Store keywords as an Array
+- Automatically clean them on save
+- Adjust data on new version load.
+
 ## 1.5.6
 
 - Fix background color not being applied

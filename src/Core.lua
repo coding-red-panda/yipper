@@ -56,6 +56,14 @@ function Yipper:OnEvent(event, ...)
                 Yipper.DB.Version = Yipper.Constants.VERSION
                 Yipper.DB.Messages = { }
             end
+
+            -- Fix the keywords, they should be an array
+            -- Apply this for any version after 1.5.6 to fix the data.
+            if Yipper.Utils:IsUpdated("1.5.6") then
+                if type(Yipper.DB.Keywords) == "string" then
+                    Yipper.DB.Keywords = Yipper.Utils:SplitString(Yipper.DB.Keywords, ",")
+                end
+            end
         end
 
         if Yipper.Comms then

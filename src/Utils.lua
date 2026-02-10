@@ -109,15 +109,13 @@ function Yipper.Utils:ColorizeMessage(message)
     end
 
     -- Safeguard the keywords missing/empty
-    if Yipper.DB.Keywords == nil or Yipper.DB.Keywords == "" then
+    if Yipper.DB.Keywords == nil or Yipper.DB.Keywords == { } then
         return message
     end
 
     -- Colorize keywords
     if Yipper.DB.Keywords then
-        local keywords = self:SplitString(Yipper.DB.Keywords, ",")
-
-        for i, keyword in ipairs(keywords) do
+        for i, keyword in ipairs(Yipper.DB.Keywords) do
             if string.find(string.lower(message), string.lower(keyword), 1, true) then
                 message = self:ReplaceInsensitiveWithColor(message, keyword, tagStart .. colorCode, tagEnd)
             end
@@ -145,10 +143,8 @@ function Yipper.Utils:PlayNotification(message)
         shouldNotify = true
     end
 
-    if not shouldNotify and Yipper.DB.Keywords and Yipper.DB.Keywords ~= "" then
-        local keywords = self:SplitString(Yipper.DB.Keywords, ",")
-
-        for i, value in ipairs(keywords) do
+    if not shouldNotify and Yipper.DB.Keywords and next(Yipper.DB.Keywords) ~= nil then
+        for i, value in ipairs(Yipper.DB.Keywords) do
             if string.find(string.lower(message), string.lower(value), 1, true) then
                 shouldNotify = true
                 break  -- No need to check more keywords
