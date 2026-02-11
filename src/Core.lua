@@ -68,8 +68,7 @@ function Yipper:OnEvent(event, ...)
 
             -- Fix the NotificationColor.
             -- If any of the components are above 1 as value, reset it to the default
-            -- value.
-            -- Code will be extra pendatic to ensure
+            -- value. Code will be extra pedantic to ensure edge-cases are covered.
             local c = Yipper.DB.NotificationColor
             if c ~= nil and ((c.r ~= nil and c.r > 1) or (c.g ~= nil and c.g > 1) or (c.b ~= nil and c.b > 1)) then
                 Yipper.DB.NotificationColor = Yipper.Constants.NotificationColor
