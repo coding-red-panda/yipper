@@ -539,13 +539,14 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox:SetSize(340, 1)
     editBox:SetPoint("TOPLEFT", 30, -360)
 
-    -- Construct the text to display
-    local keywords = table.concat(Yipper.DB.Keywords, ",")
+    -- Construct the text to display; account for not keywords being stored.
+    local keywords = table.concat(Yipper.DB.Keywords or {}, ",")
     editBox:SetText(keywords or "", ",")
 
     -- Set the script to save the data automatically when focus is lost
     editBox:SetScript("OnEditFocusLost", function(self)
-        Yipper.DB.Keywords = Yipper.Utils:SplitString(self:GetText(), ",")
+        local editText = self:GetText() or "" -- Account for no data
+        Yipper.DB.Keywords = Yipper.Utils:SplitString(editText, ",")
     end)
 
     -- Add a nice label to the box to explain the purpose.

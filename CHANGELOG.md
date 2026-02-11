@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.8
+
+- Bugfixes for the keyword handling
+
 ## 1.5.7
 
 - Store keywords as an Array

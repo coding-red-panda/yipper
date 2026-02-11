@@ -61,7 +61,8 @@ function Yipper:OnEvent(event, ...)
             -- Apply this for any version after 1.5.6 to fix the data.
             if Yipper.Utils:IsUpdated("1.5.6") then
                 if type(Yipper.DB.Keywords) == "string" then
-                    Yipper.DB.Keywords = Yipper.Utils:SplitString(Yipper.DB.Keywords, ",")
+                    local keywords = Yipper.DB.Keywords or ""
+                    Yipper.DB.Keywords = Yipper.Utils:SplitString(keywords, ",")
                 end
             end
         end
