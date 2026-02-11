@@ -65,6 +65,15 @@ function Yipper:OnEvent(event, ...)
                     Yipper.DB.Keywords = Yipper.Utils:SplitString(keywords, ",")
                 end
             end
+
+            -- Fix the NotificationColor.
+            -- If any of the components are above 1 as value, reset it to the default
+            -- value.
+            -- Code will be extra pendatic to ensure
+            local c = Yipper.DB.NotificationColor
+            if c ~= nil and ((c.r ~= nil and c.r > 1) or (c.g ~= nil and c.g > 1) or (c.b ~= nil and c.b > 1)) then
+                Yipper.DB.NotificationColor = Yipper.Constants.NotificationColor
+            end
         end
 
         if Yipper.Comms then

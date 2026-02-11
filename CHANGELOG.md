@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.9
+
+- Add safeguard for the notification color to reset it when it has invalid values.
+
 ## 1.5.8
 
 - Bugfixes for the keyword handling
