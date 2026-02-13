@@ -7,6 +7,14 @@ local addonName, Yipper = ...
 -- Initialize the module
 Yipper.Utils = {}
 
+-- Yipper.Utils - IsSecret
+--
+-- Function that returns true when the passed in data is a secret
+-- and unaccessable for safe usage.
+function Yipper.Utils:IsSecret(value)
+    return issecretvalue(message) and not canaccessvalue(message)
+end
+
 -- Yipper.Utils - TimestampMessage
 --
 -- Puts a timestamp in front of the message using the moment in time that the function is called.

@@ -76,7 +76,7 @@ function Yipper.Events:OnEvent(event, ...)
         -- Do not attempt to process messages when they are secret.
         -- If we're dealing with a secret system message, just ignore it.
         -- Means the player is in combat, and these messages are useless for us.
-        if issecretvalue(message) and not canaccessvalue(message) then
+        if Yipper.Utils:IsSecret(message) then
             return
         end
 
