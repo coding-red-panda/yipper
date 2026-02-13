@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.10
+
+- Add loading issue when no keywords were defined after upgrade.
+
 ## 1.5.9
 
 - Add safeguard for the notification color to reset it when it has invalid values.

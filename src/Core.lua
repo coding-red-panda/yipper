@@ -60,7 +60,7 @@ function Yipper:OnEvent(event, ...)
             -- Fix the keywords, they should be an array
             -- Apply this for any version after 1.5.6 to fix the data.
             if Yipper.Utils:IsUpdated("1.5.6") then
-                if type(Yipper.DB.Keywords) == "string" then
+                if Yipper.DB.Keywords and type(Yipper.DB.Keywords) == "string" then
                     local keywords = Yipper.DB.Keywords or ""
                     Yipper.DB.Keywords = Yipper.Utils:SplitString(keywords, ",")
                 end

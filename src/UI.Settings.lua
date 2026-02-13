@@ -540,7 +540,11 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox:SetPoint("TOPLEFT", 30, -360)
 
     -- Construct the text to display; account for not keywords being stored.
-    local keywords = table.concat(Yipper.DB.Keywords or {}, ",")
+    local keywords = ""
+
+    if Yipper.DB.Keywords then
+        keywords = table.concat(Yipper.DB.Keywords or {}, ",")
+    end
     editBox:SetText(keywords or "", ",")
 
     -- Set the script to save the data automatically when focus is lost
