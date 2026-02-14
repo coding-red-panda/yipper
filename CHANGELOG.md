@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.6.2
+
+- Fix typo in the notification for the tracked player.
+
 ## 1.6.1
 
 - Fix `realm` being `nil` in dungeons.

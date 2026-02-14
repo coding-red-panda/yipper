@@ -42,7 +42,8 @@ function Yipper:OnEvent(event, ...)
                 ["SelectedFont"] = Yipper.Constants.Fonts.FrizQuadrata,
                 ["NotificationSound"] = nil,
                 ["NotificationColor"] = Yipper.Constants.NotificationColor,
-                ["ShowHeader"] = true
+                ["ShowHeader"] = true,
+                ["PingTrackedPlayer"] = false
             }
         -- If the YipperDB variable has been loaded for the character,
         -- assign it to the internal DB so the AddOn has its settings

@@ -196,7 +196,7 @@ end
 function Yipper.UI.Settings:AddTrackerSettings()
     local checkbox = CreateFrame("CheckButton", nil, Yipper.settingsFrame, "ChatCOnfigCheckButtonTemplate")
 
-    checkbox:SetChecked(Yipper.DB.ShowHeader)
+    checkbox:SetChecked(Yipper.DB.PingTrackedPlayer)
     checkbox:SetPoint("TOPLEFT", 30, -95)
     checkbox.Text:SetText("Notify on message")
     checkbox.tooltip = "Sends notification sounds when the tracked player sends a message."
