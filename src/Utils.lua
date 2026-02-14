@@ -135,10 +135,18 @@ end
 --
 -- Plays the configured notification sound when the message contains the player's name.
 -- TODO: Expand to include the TRP3 Profile at some point.
-function Yipper.Utils:PlayNotification(message)
+function Yipper.Utils:PlayNotification(message, sender)
     -- If no notification sound has been set,
     -- return as we can't notify the user with a sound.
     if not Yipper.DB.NotificationSound then
+        return
+    end
+
+    local name, realm = UnitName("player")
+    local me = name.."-"..(realm or GetNormalizedRealmName())
+
+    -- Do not play the notification sound for our own messages.
+    if sender == me then
         return
     end
 
@@ -146,6 +154,12 @@ function Yipper.Utils:PlayNotification(message)
     local shouldNotify = false
 
     if string.find(string.lower(message), string.lower(playerName), 1, true) then
+        shouldNotify = true
+    end
+
+    -- If the sender is currently being tracked, notify the player.
+    -- The caller checks already if this is not us to avoid spam.
+    if Yipper.DB.PingTrackedPlayer and sender == Yipper.TrackedPlayer then
         shouldNotify = true
     end
 

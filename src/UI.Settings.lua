@@ -80,6 +80,7 @@ function Yipper.UI.Settings:Init()
     -- Keeps our code here manageable
     self:AddMinimapSettings()
     self:AddHeaderSettings()
+    self:AddTrackerSettings()
     self:AddAlphaSettings()
     self:AddBackgroundColorPicker()
     self:AddBorderColorPicker()
@@ -142,6 +143,28 @@ function Yipper.UI.Settings:RestorePosition()
     end
 end
 
+-- Yipper.UI.Settings - AddMinimapSettings
+--
+-- Responsible for hooking up the UI components to be able to toggle
+-- the minimap button of the AddOn. Some users like buttons, some don't.
+function Yipper.UI.Settings:AddMinimapSettings()
+    local checkbox = CreateFrame("CheckButton", nil, Yipper.settingsFrame, "ChatConfigCheckButtonTemplate")
+
+    checkbox:SetChecked(Yipper.DB.EnableMinimapButton)
+    checkbox:SetPoint("TOPLEFT", 30, -35)
+    checkbox.Text:SetText("Toggle Minimap Visibility")
+    checkbox.tooltip = "Toggle the visibility of the Yipper Minimap Button"
+    checkbox:HookScript("OnClick", function(self)
+        Yipper.DB.EnableMinimapButton = self:GetChecked()
+
+        if self:GetChecked() then
+            Yipper.Minimap.frame:Show()
+        else
+            Yipper.Minimap.frame:Hide()
+        end
+    end)
+end
+
 -- Yipper.UI.Settings - AddHeaderSettings
 --
 -- Responsible for hooking up the UI components to be able to toggle
@@ -150,8 +173,8 @@ function Yipper.UI.Settings:AddHeaderSettings()
     local checkbox = CreateFrame("CheckButton", nil, Yipper.settingsFrame, "ChatCOnfigCheckButtonTemplate")
 
     checkbox:SetChecked(Yipper.DB.ShowHeader)
-    checkbox:SetPoint("TOPLEFT", 200, -35)
-    checkbox.Text:SetText("Toggle Header")
+    checkbox:SetPoint("TOPLEFT", 30, -65)
+    checkbox.Text:SetText("Toggle Header Visibility")
     checkbox.tooltip = "Toggle the visibility of the Yipper Header"
     checkbox:HookScript("OnClick", function(self)
         Yipper.DB.ShowHeader = self:GetChecked()
@@ -166,24 +189,26 @@ function Yipper.UI.Settings:AddHeaderSettings()
     end)
 end
 
--- Yipper.UI.Settings - AddMinimapSettings
+-- Yipper.UI.Settings - AddTrackerSettings
 --
 -- Responsible for hooking up the UI components to be able to toggle
--- the minimap button of the AddOn. Some users like buttons, some don't.
-function Yipper.UI.Settings:AddMinimapSettings()
-    local checkbox = CreateFrame("CheckButton", nil, Yipper.settingsFrame, "ChatConfigCheckButtonTemplate")
+-- the the tracking of notifications for the talking target.
+function Yipper.UI.Settings:AddTrackerSettings()
+    local checkbox = CreateFrame("CheckButton", nil, Yipper.settingsFrame, "ChatCOnfigCheckButtonTemplate")
 
-    checkbox:SetChecked(Yipper.DB.EnableMinimapButton)
-    checkbox:SetPoint("TOPLEFT", 30, -35)
-    checkbox.Text:SetText("Toggle Minimap")
-    checkbox.tooltip = "Toggle the visibility of the Yipper Minimap Button"
+    checkbox:SetChecked(Yipper.DB.ShowHeader)
+    checkbox:SetPoint("TOPLEFT", 30, -95)
+    checkbox.Text:SetText("Notify on message")
+    checkbox.tooltip = "Sends notification sounds when the tracked player sends a message."
     checkbox:HookScript("OnClick", function(self)
-        Yipper.DB.EnableMinimapButton = self:GetChecked()
+        Yipper.DB.PingTrackedPlayer = self:GetChecked()
 
         if self:GetChecked() then
-            Yipper.Minimap.frame:Show()
+            Yipper.headerFrame:Show()
+            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -30)
         else
-            Yipper.Minimap.frame:Hide()
+            Yipper.headerFrame:Hide()
+            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -5)
         end
     end)
 end
@@ -206,7 +231,7 @@ function Yipper.UI.Settings:AddAlphaSettings()
     local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
 
     slider:SetWidth(340, 20)
-    slider:SetPoint("TOPLEFT", 30, -70)
+    slider:SetPoint("TOPLEFT", 30, -130)
     slider:Init(Yipper.DB.WindowAlpha or 100, options.minValue, options.maxValue, options.steps, options.formatters)
 
     -- When the value changes, apply the alpha, but keep the color!
@@ -220,6 +245,38 @@ function Yipper.UI.Settings:AddAlphaSettings()
     end, slider)
 end
 
+-- Yipper.UI.Settings - AddFontSizeSettings
+--
+-- Responsible for hooking up the UI components to be able to control the
+-- font size of the windows to make text more readable.
+function Yipper.UI.Settings:AddFontSizeSettings()
+    local minvalue = 8
+    local maxValue = 64
+    local stepValue = 2
+    local options = Settings.CreateSliderOptions(minvalue, maxValue, stepValue)
+
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value) return value end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Max, function(_) return maxValue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Min, function(_) return minvalue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Top, function(_) return "Font Size" end);
+
+    local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
+
+    slider:SetWidth(340)
+    slider:SetPoint("TOPLEFT", 30, -170)
+    slider:Init(
+            Yipper.DB.FontSize or Yipper.Constants.FontSize,
+            options.minValue,
+            options.maxValue,
+            options.steps,
+            options.formatters
+    )
+    slider:RegisterCallback("OnValueChanged", function(_, value)
+        Yipper.DB.FontSize = value
+        Yipper.messageFrame:SetFont(Yipper.DB.SelectedFont, value, "");
+    end, slider)
+end
+
 -- Yipper.UI.Settings - AddBackgroundColorPicker
 --
 -- Responsible for hooking up the UI components to be able to select the background
@@ -230,7 +287,7 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)
-    colorButton:SetPoint("TOPLEFT", 30, -190)
+    colorButton:SetPoint("TOPLEFT", 30, -225)
     colorButton:SetText("Set Background Color")
     colorButton.Texture = colorButton:CreateTexture()
     colorButton.Texture:SetAllPoints()
@@ -277,7 +334,7 @@ function Yipper.UI.Settings:AddBackgroundColorPicker()
     end)
 end
 
--- Yipper.UI.Settings - AddBackgroundColorPicker
+-- Yipper.UI.Settings - AddBorderColorPicker
 --
 -- Responsible for hooking up the UI components to be able to select the background
 -- color of the windows.
@@ -287,7 +344,7 @@ function Yipper.UI.Settings:AddBorderColorPicker()
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)
-    colorButton:SetPoint("TOPLEFT", 30, -220)
+    colorButton:SetPoint("TOPLEFT", 30, -255)
     colorButton:SetText("Set Border Color")
     colorButton.Texture = colorButton:CreateTexture()
     colorButton.Texture:SetAllPoints()
@@ -334,74 +391,6 @@ function Yipper.UI.Settings:AddBorderColorPicker()
     end)
 end
 
--- Yipper.UI.Settings - AddFontSizeSettings
---
--- Responsible for hooking up the UI components to be able to control the
--- font size of the windows to make text more readable.
-function Yipper.UI.Settings:AddFontSizeSettings()
-    local minvalue = 8
-    local maxValue = 64
-    local stepValue = 2
-    local options = Settings.CreateSliderOptions(minvalue, maxValue, stepValue)
-
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value) return value end);
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Max, function(_) return maxValue end);
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Min, function(_) return minvalue end);
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Top, function(_) return "Font Size" end);
-
-    local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
-
-    slider:SetWidth(340)
-    slider:SetPoint("TOPLEFT", 30, -130)
-    slider:Init(
-            Yipper.DB.FontSize or Yipper.Constants.FontSize,
-            options.minValue,
-            options.maxValue,
-            options.steps,
-            options.formatters
-    )
-    slider:RegisterCallback("OnValueChanged", function(_, value)
-        Yipper.DB.FontSize = value
-        Yipper.messageFrame:SetFont(Yipper.DB.SelectedFont, value, "");
-    end, slider)
-end
-
--- Yipper.UI.Settings - AddFontSelectionSettings
---
--- Responsible for hooking up the UI components to be able to control the
--- font of the windows to make text more readable.
-function Yipper.UI.Settings:AddFontSelectionSettings()
-    -- Generator function to construct the actual button
-    local createButton = function(root, display, font)
-        root:CreateButton(display, function(data)
-            local fontSize = Yipper.DB.FontSize
-
-            Yipper.DB.SelectedFont = font
-            Yipper.messageFrame:SetFont(font, fontSize, "")
-        end)
-    end
-
-    -- Generator function to create all the buttons.
-    local function GeneratorFunction(owner, rootDescription)
-        rootDescription:CreateTitle("Font Selection")
-        for name, path in pairs(Yipper.Constants.Fonts) do
-            createButton(rootDescription, name, path)
-        end
-    end
-
-    -- Create and configure the DropDown.
-    local dropdown = CreateFrame("DropdownButton", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
-
-    dropdown:SetText("Select Font")
-    dropdown:SetSize(340, 20)
-    dropdown:SetPoint("TOPLEFT", 30, -310)
-    dropdown:SetupMenu(GeneratorFunction)
-    dropdown.Texture = dropdown:CreateTexture()
-    dropdown.Texture:SetAllPoints()
-    dropdown.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
-    dropdown.Texture:SetVertexColor(0, 0, 0)
-end
-
 -- Yipper.UI.Settings - AddNotificationColorPicker
 --
 -- Responsible for hooking up the UI components to be able to select the background
@@ -411,7 +400,7 @@ function Yipper.UI.Settings:AddNotificationColorPicker()
     local colorButton = CreateFrame("Button", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
 
     colorButton:SetSize(340, 20)
-    colorButton:SetPoint("TOPLEFT", 30, -250)
+    colorButton:SetPoint("TOPLEFT", 30, -285)
     colorButton:SetText("Set Notification Color")
     colorButton.Texture = colorButton:CreateTexture()
     colorButton.Texture:SetAllPoints()
@@ -511,7 +500,43 @@ function Yipper.UI.Settings:NotificationSelectionSettings()
 
     dropdown:SetText("Select Notification Sound")
     dropdown:SetSize(340, 20)
-    dropdown:SetPoint("TOPLEFT", 30, -280)
+    dropdown:SetPoint("TOPLEFT", 30, -310)
+    dropdown:SetupMenu(GeneratorFunction)
+    dropdown.Texture = dropdown:CreateTexture()
+    dropdown.Texture:SetAllPoints()
+    dropdown.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
+    dropdown.Texture:SetVertexColor(0, 0, 0)
+end
+
+-- Yipper.UI.Settings - AddFontSelectionSettings
+--
+-- Responsible for hooking up the UI components to be able to control the
+-- font of the windows to make text more readable.
+function Yipper.UI.Settings:AddFontSelectionSettings()
+    -- Generator function to construct the actual button
+    local createButton = function(root, display, font)
+        root:CreateButton(display, function(data)
+            local fontSize = Yipper.DB.FontSize
+
+            Yipper.DB.SelectedFont = font
+            Yipper.messageFrame:SetFont(font, fontSize, "")
+        end)
+    end
+
+    -- Generator function to create all the buttons.
+    local function GeneratorFunction(owner, rootDescription)
+        rootDescription:CreateTitle("Font Selection")
+        for name, path in pairs(Yipper.Constants.Fonts) do
+            createButton(rootDescription, name, path)
+        end
+    end
+
+    -- Create and configure the DropDown.
+    local dropdown = CreateFrame("DropdownButton", nil, Yipper.settingsFrame, "UIPanelButtonTemplate")
+
+    dropdown:SetText("Select Font")
+    dropdown:SetSize(340, 20)
+    dropdown:SetPoint("TOPLEFT", 30, -340)
     dropdown:SetupMenu(GeneratorFunction)
     dropdown.Texture = dropdown:CreateTexture()
     dropdown.Texture:SetAllPoints()
@@ -537,7 +562,7 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox:EnableMouse(true)
     editBox:SetMultiLine(true)
     editBox:SetSize(340, 1)
-    editBox:SetPoint("TOPLEFT", 30, -360)
+    editBox:SetPoint("TOPLEFT", 30, -390)
 
     -- Construct the text to display; account for not keywords being stored.
     local keywords = ""

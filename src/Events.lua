@@ -165,17 +165,8 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
         table.remove(Yipper.DB.Messages, 1)
     end
 
-    local function ShouldPlayNotification(origin)
-        local name, realm = UnitName("player")
-        local me = name.."-"..(realm or GetNormalizedRealmName())
-
-        return origin ~= me
-    end
-
-    -- Play the notification sound if required.
-    if ShouldPlayNotification(sender) then
-        Yipper.Utils:PlayNotification(message)
-    end
+    -- Play the notification sound, if applicable.
+    Yipper.Utils:PlayNotification(message, sender)
 
     -- Push the message into the messageFrame if the sender is the user currently
     -- being tracked.

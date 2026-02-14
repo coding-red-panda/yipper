@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 1.6.0
+
+- Play notification sound when the tracked player sends a message
+- Add settings to disable the behavior
+
 ## 1.5.11
 
 - Fix the button interaction from the AddOn Ledger.
