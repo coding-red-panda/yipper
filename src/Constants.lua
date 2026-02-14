@@ -8,7 +8,7 @@ local addonName, Yipper = ...
 Yipper.Constants = {}
 
 -- Track our version in case we need to do something breaking
-Yipper.Constants.VERSION = "1.5.10"
+Yipper.Constants.VERSION = "1.5.11"
 
 -- Define the list of chat events we want to listen to
 Yipper.Constants.ChatEvents = {

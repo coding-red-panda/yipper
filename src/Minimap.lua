@@ -22,8 +22,8 @@ function Yipper.Minimap:Init()
         text = addonName,
         icon = "Interface\\Icons\\inv_foxwyvernpetred",
         registerForAnyClick = true,
-        func = function(btn, arg1, arg2, checked, mouseButton)
-            Yipper.Minimap:OnMouseClick(mouseButton)
+        func = function(_, btnContext, _)
+            Yipper.Minimap:OnMouseClick(btnContext.buttonName)
         end,
         funcOnEnter = function(menuItem)
             GameTooltip:SetOwner(menuItem, "ANCHOR_BOTTOMLEFT", -15, 20)

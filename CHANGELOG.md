@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.5.11
+
+- Fix the button interaction from the AddOn Ledger.
+
 ## 1.5.10
 
 - Add loading issue when no keywords were defined after upgrade.
