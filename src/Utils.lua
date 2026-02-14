@@ -143,7 +143,7 @@ function Yipper.Utils:PlayNotification(message, sender)
     end
 
     local name, realm = UnitName("player")
-    local me = name.."-"..(realm or GetNormalizedRealmName())
+    local me = name.."-"..(realm or Yipper.Utils:GetNormalizedRealmName())
 
     -- Do not play the notification sound for our own messages.
     if sender == me then
@@ -214,4 +214,15 @@ function Yipper.Utils:ReplaceInsensitiveWithColor(str, find, colorStart, colorEn
     return string.gsub(str, pattern, function(matched)
         return colorStart .. matched .. colorEnd
     end)
+end
+
+-- Yipper.Utils - GetNormalizedRealmName
+--
+-- Returns the normalized Realm name using the standard GetRealmName()
+-- and applying the correct cleanup logic, since we cannot rely on Blizzard's
+-- API to always return a value.
+function Yipper.Utils:GetNormalizedRealmName()
+    local realmName = GetRealmName()
+
+    return realmName:gsub("[%s%.%-]", "")
 end

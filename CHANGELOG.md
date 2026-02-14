@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 1.6.1
+
+- Fix `realm` being `nil` in dungeons.
+- Build our own `GetNormalizedRealmName`, since Blizzard's API is unreliable.
+
 ## 1.6.0
 
 - Play notification sound when the tracked player sends a message

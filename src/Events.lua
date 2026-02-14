@@ -114,7 +114,7 @@ function Yipper.Events:OnEvent(event, ...)
         -- we need to fix the sender in both cases.
         -- If we're the sender, just construct it using the realm.
         if sender == UnitName("player") then
-            sender = UnitName("player") .. "-" .. GetNormalizedRealmName()
+            sender = UnitName("player") .. "-" .. Yipper.Utils:GetNormalizedRealmName()
         else
             -- If the sender is someone else, use their GUID to get the player info.
             local _, _, _, _, _, name, realmName = GetPlayerInfoByGUID(guid)
@@ -123,7 +123,7 @@ function Yipper.Events:OnEvent(event, ...)
             -- so manually set it.
             if realmName == nil or realmName == "" then
                 -- Is nil/empty on the same realm
-                realmName = GetNormalizedRealmName()
+                realmName = Yipper.Utils:GetNormalizedRealmName()
             end
 
             sender = name .. "-" .. realmName
@@ -206,10 +206,10 @@ function Yipper.Events:UpdateTrackedPlayer()
     -- Otherwise check if the target we have currently have is a player.
     if UnitName("mouseover") ~= nil and UnitIsPlayer("mouseover") then
         local name, realm = UnitName("mouseover")
-        newTrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
+        newTrackedPlayer = name .. "-" .. (realm or Yipper.Utils:GetNormalizedRealmName())
     elseif UnitName("target") ~= nil and UnitIsPlayer("target") then
         local name, realm = UnitName("target")
-        newTrackedPlayer = name .. "-" .. (realm or GetNormalizedRealmName())
+        newTrackedPlayer = name .. "-" .. (realm or Yipper.Utils:GetNormalizedRealmName())
     end
 
     -- Only update if the newTrackedPlayer is different from the one we're
