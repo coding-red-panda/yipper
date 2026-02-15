@@ -8,7 +8,7 @@ local addonName, Yipper = ...
 Yipper.Constants = {}
 
 -- Track our version in case we need to do something breaking
-Yipper.Constants.VERSION = "1.6.2"
+Yipper.Constants.VERSION = "1.7.0"
 
 -- Define the list of chat events we want to listen to
 Yipper.Constants.ChatEvents = {
@@ -27,7 +27,9 @@ Yipper.Constants.ChatEvents = {
     "CHAT_MSG_SYSTEM",
     "CHAT_MSG_ADDON_LOGGED",
     "LOADING_SCREEN_ENABLED",
-    "LOADING_SCREEN_DISABLED"
+    "LOADING_SCREEN_DISABLED",
+    "PLAYER_REGEN_DISABLED",
+    "PLAYER_REGEN_ENABLED"
 }
 
 Yipper.Constants.ChatColors = {

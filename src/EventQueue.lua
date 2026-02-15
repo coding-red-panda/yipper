@@ -10,7 +10,7 @@ local addonName, Yipper = ...
 
 -- Initialize the EventQueue
 Yipper.EventQueue = {
-    isLoadingScreen = false,
+    IsLoadingScreenOrCombat = false,
     queue = {}
 }
 
@@ -35,7 +35,6 @@ function Yipper.EventQueue:ProcessQueue()
     for i, eventData in ipairs(self.queue) do
         Yipper.Events:OnEvent(eventData.event, unpack(eventData.args))
     end
-
 
     -- Clear the Queue when done
     self.queue = {}

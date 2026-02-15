@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 1.7.0
+
+- Combat encounters should not cause errors.
+- Offloading events during combat to process them afterwards.
+
 ## 1.6.2
 
 - Fix typo in the notification for the tracked player.
