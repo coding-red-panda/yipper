@@ -1,5 +1,11 @@
 ﻿# Yipper Changelog
 
+## 1.7.1
+
+- Told the sound toggle to leave the header settings alone
+- Told the keyword field to strip trailing commas
+- Fixed the notification sound to ignore whitespace and nil values
+
 ## 1.7.0
 
 - Combat encounters should not cause errors.

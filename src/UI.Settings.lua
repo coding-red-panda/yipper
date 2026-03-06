@@ -202,14 +202,6 @@ function Yipper.UI.Settings:AddTrackerSettings()
     checkbox.tooltip = "Sends notification sounds when the tracked player sends a message."
     checkbox:HookScript("OnClick", function(self)
         Yipper.DB.PingTrackedPlayer = self:GetChecked()
-
-        if self:GetChecked() then
-            Yipper.headerFrame:Show()
-            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -30)
-        else
-            Yipper.headerFrame:Hide()
-            Yipper.messageFrame:SetPoint("TOPLEFT", Yipper.mainFrame, "TOPLEFT", 10, -5)
-        end
     end)
 end
 
@@ -574,8 +566,10 @@ function Yipper.UI.Settings:KeywordSettings()
 
     -- Set the script to save the data automatically when focus is lost
     editBox:SetScript("OnEditFocusLost", function(self)
-        local editText = self:GetText() or "" -- Account for no data
-        Yipper.DB.Keywords = Yipper.Utils:SplitString(editText, ",")
+        -- Account for no data and strip trailing commas
+        local cleanKeywords = (self:GetText() or ""):gsub(",$", "")
+        self:SetText(cleanKeywords)
+        Yipper.DB.Keywords = Yipper.Utils:SplitString(cleanKeywords, ",")
     end)
 
     -- Add a nice label to the box to explain the purpose.

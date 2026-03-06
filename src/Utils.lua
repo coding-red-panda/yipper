@@ -159,13 +159,15 @@ function Yipper.Utils:PlayNotification(message, sender)
 
     -- If the sender is currently being tracked, notify the player.
     -- The caller checks already if this is not us to avoid spam.
-    if Yipper.DB.PingTrackedPlayer and sender == Yipper.TrackedPlayer then
+    if not shouldNotify and Yipper.DB.PingTrackedPlayer and sender == Yipper.TrackedPlayer then
         shouldNotify = true
     end
 
-    if not shouldNotify and Yipper.DB.Keywords and next(Yipper.DB.Keywords) ~= nil and Yipper.DB.Keywords ~= "" then
+    if not shouldNotify and Yipper.DB.Keywords and next(Yipper.DB.Keywords) ~= nil then
         for i, value in ipairs(Yipper.DB.Keywords) do
-            if string.find(string.lower(message), string.lower(value), 1, true) then
+            -- Account for the value being nil or an empty string.
+            -- If we have a match otherwise, set the flag to true and break the loop.
+            if value ~= nil and value ~= "" and string.find(string.lower(message), string.lower(value), 1, true) then
                 shouldNotify = true
                 break  -- No need to check more keywords
             end
