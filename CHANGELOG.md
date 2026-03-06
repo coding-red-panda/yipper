@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 1.7.2
+
+- Attempt at fixing the colorization issue with default values.
+
 ## 1.7.1
 
 - Told the sound toggle to leave the header settings alone

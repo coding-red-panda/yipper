@@ -123,7 +123,7 @@ function Yipper.Utils:ColorizeMessage(message)
 
     -- Colorize keywords
     for i, keyword in ipairs(Yipper.DB.Keywords) do
-        if string.find(string.lower(message), string.lower(keyword), 1, true) then
+        if keyword ~= nil and keyword ~= "" and string.find(string.lower(message), string.lower(keyword), 1, true) then
             message = self:ReplaceInsensitiveWithColor(message, keyword, tagStart .. colorCode, tagEnd)
         end
     end

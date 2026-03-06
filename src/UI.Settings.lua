@@ -568,8 +568,13 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox:SetScript("OnEditFocusLost", function(self)
         -- Account for no data and strip trailing commas
         local cleanKeywords = (self:GetText() or ""):gsub(",$", "")
-        self:SetText(cleanKeywords)
-        Yipper.DB.Keywords = Yipper.Utils:SplitString(cleanKeywords, ",")
+
+        if cleanKeywords == nil or cleanKeywords == "" then
+            Yipper.DB.Keywords = {}
+        else
+            self:SetText(cleanKeywords)
+            Yipper.DB.Keywords = Yipper.Utils:SplitString(cleanKeywords, ",")
+        end
     end)
 
     -- Add a nice label to the box to explain the purpose.
