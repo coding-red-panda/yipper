@@ -2,7 +2,7 @@
 --
 -- Contains methods to be used elsewhere.
 
-local addonName, Yipper = ...
+local _, Yipper = ...
 
 -- Initialize the module
 Yipper.Utils = {}
@@ -10,9 +10,9 @@ Yipper.Utils = {}
 -- Yipper.Utils - IsSecret
 --
 -- Function that returns true when the passed in data is a secret
--- and unaccessable for safe usage.
+-- and not accessible for safe usage.
 function Yipper.Utils:IsSecret(value)
-    return issecretvalue(message) and not canaccessvalue(message)
+    return issecretvalue(value) and not canaccessvalue(value)
 end
 
 -- Yipper.Utils - TimestampMessage
@@ -101,7 +101,7 @@ end
 -- TODO: Expand to include the TRP3 Profile at some point.
 function Yipper.Utils:ColorizeMessage(message)
     -- Don't bother editing the message if we can't work with it.
-    if issecretvalue(message) and not canaccessvalue(message) then
+    if self:IsSecret(message) then
         return message
     end
 
@@ -122,7 +122,7 @@ function Yipper.Utils:ColorizeMessage(message)
     end
 
     -- Colorize keywords
-    for i, keyword in ipairs(Yipper.DB.Keywords) do
+    for _, keyword in ipairs(Yipper.DB.Keywords) do
         if keyword ~= nil and keyword ~= "" and string.find(string.lower(message), string.lower(keyword), 1, true) then
             message = self:ReplaceInsensitiveWithColor(message, keyword, tagStart .. colorCode, tagEnd)
         end
@@ -135,22 +135,20 @@ end
 --
 -- Plays the configured notification sound when the message contains the player's name.
 -- TODO: Expand to include the TRP3 Profile at some point.
-function Yipper.Utils:PlayNotification(message, sender)
+function Yipper.Utils:PlayNotification(message, guid)
     -- If no notification sound has been set,
     -- return as we can't notify the user with a sound.
     if not Yipper.DB.NotificationSound then
         return
     end
 
-    local name, realm = UnitName("player")
-    local me = name.."-"..(realm or Yipper.Utils:GetNormalizedRealmName())
+    local _, _, _, _, _, playerName, _ = GetPlayerInfoByGUID(guid)
 
     -- Do not play the notification sound for our own messages.
-    if sender == me then
+    if guid == UnitGUID("player") then
         return
     end
 
-    local playerName = UnitName("player")
     local shouldNotify = false
 
     if string.find(string.lower(message), string.lower(playerName), 1, true) then
@@ -159,12 +157,12 @@ function Yipper.Utils:PlayNotification(message, sender)
 
     -- If the sender is currently being tracked, notify the player.
     -- The caller checks already if this is not us to avoid spam.
-    if not shouldNotify and Yipper.DB.PingTrackedPlayer and sender == Yipper.TrackedPlayer then
+    if not shouldNotify and Yipper.DB.PingTrackedPlayer and guid == Yipper.TrackedPlayerGuid then
         shouldNotify = true
     end
 
     if not shouldNotify and Yipper.DB.Keywords and next(Yipper.DB.Keywords) ~= nil then
-        for i, value in ipairs(Yipper.DB.Keywords) do
+        for _, value in ipairs(Yipper.DB.Keywords) do
             -- Account for the value being nil or an empty string.
             -- If we have a match otherwise, set the flag to true and break the loop.
             if value ~= nil and value ~= "" and string.find(string.lower(message), string.lower(value), 1, true) then

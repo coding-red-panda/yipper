@@ -1,5 +1,12 @@
 ﻿# Yipper Changelog
 
+## 2.0.0
+
+- Rewrote Yipper to track data based on the GUID.
+- Ignoring messages entirely in combat when the GUID is a secret
+- Cleaned up the code to prepare for adding multiple windows.
+- Issues might arise from the rewrite, will be fixed as soon as reported.
+
 ## 1.7.2
 
 - Attempt at fixing the colorization issue with default values.

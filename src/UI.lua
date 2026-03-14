@@ -231,10 +231,19 @@ end
 -- Updates the text display of the header frame
 -- Trigger on update and uses the value of the `TrackedPlayer` field.
 function Yipper.UI:UpdateHeaderText()
-    local tracked = Yipper.TrackedPlayer
+    local trackedGuid = Yipper.TrackedPlayerGuid
 
-    if tracked and tracked ~= "" then
-        Yipper.headerText:SetText("Tracking: " .. tracked)
+    if trackedGuid and trackedGuid ~= "" then
+        local _, _, _, _, _, name, realmName = GetPlayerInfoByGUID(trackedGuid)
+
+        -- Sadly realmName is not returned on same realm emotes
+        -- so manually set it.
+        if realmName == nil or realmName == "" then
+            -- Is nil/empty on the same realm
+            realmName = Yipper.Utils:GetNormalizedRealmName()
+        end
+
+        Yipper.headerText:SetText("Tracking: " .. name .. " - " .. realmName)
     else
         Yipper.headerText:SetText("Tracking: (none)")
     end
@@ -245,9 +254,9 @@ end
 function Yipper.UI:UpdateDisplayedText()
     -- Return if there's no player tracked,
     -- or there's no messages for the player
-    if Yipper.TrackedPlayer == nil or   -- No player tracked
+    if Yipper.TrackedPlayerGuid == nil or   -- No player tracked
         Yipper.DB.Messages == nil or    -- new character, no messages yet initializes
-        Yipper.DB.Messages[Yipper.TrackedPlayer] == nil then -- Player has not produced messages
+        Yipper.DB.Messages[Yipper.TrackedPlayerGuid] == nil then -- Player has not produced messages
         return
     end
 
@@ -255,7 +264,7 @@ function Yipper.UI:UpdateDisplayedText()
     Yipper.messageFrame:Clear()
 
     -- We have a tracked player, display their messages
-    for _, messageData in pairs(Yipper.DB.Messages[Yipper.TrackedPlayer]) do
+    for _, messageData in pairs(Yipper.DB.Messages[Yipper.TrackedPlayerGuid]) do
         local colorCodes = Yipper.Constants.ChatColors[messageData.event]
         local message = messageData.message
 
@@ -266,11 +275,13 @@ function Yipper.UI:UpdateDisplayedText()
             -- to make it make sense.
             -- Use Regex, to strip out the Realm name (After the last -)
             if messageData.event == "CHAT_MSG_EMOTE" then
-                local player = Yipper.TrackedPlayer:match("^(.*)%-.+$")
+                local _, _, _, _, _, player, _ = GetPlayerInfoByGUID(Yipper.TrackedPlayerGuid)
                 message = player .. " " .. messageData.message
+                message = Yipper.Utils:ColorizeQuotes(message)
             end
 
-            local colorizedMessage = Yipper.Utils:ColorizeMessage(messageData.message)
+            -- Colorize the message based on the keywords and name.
+            local colorizedMessage = Yipper.Utils:ColorizeMessage(message)
 
             -- Add the message with the correct color codes.
             -- The method needs values between 0 - 1, so divide the values by 255.

@@ -27,51 +27,40 @@ end
 -- problem message's logic in the future.
 function Yipper.Events:OnEvent(event, ...)
     if event == "CHAT_MSG_SAY" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_EMOTE" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId, guid = ...
-
-        -- Fix the message to include the sender's name.
-        -- TODO: Support TRP3 Profiles
-        local _, _, _, _, _, name, _ = GetPlayerInfoByGUID(guid)
-        message = name .. " " .. message
-
-        -- Before storing the message, find the quoted parts
-        -- and colorize them with the correct color.
-        message = Yipper.Utils:ColorizeQuotes(message)
-
-        -- Store the message and process it
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_GUILD" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_OFFICER" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_PARTY" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_PARTY_LEADER" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_RAID" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_RAID_LEADER" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_YELL" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_WHISPER" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_RAID_WARNING" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId = ...
-        self:StoreMessage(message, sender, lineId, event)
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_SYSTEM" then
-        local message, _, _, _, _, _, _, _, _, _, lineId = ...
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
 
         -- Do not attempt to process messages when they are secret.
         -- If we're dealing with a secret system message, just ignore it.
@@ -96,7 +85,7 @@ function Yipper.Events:OnEvent(event, ...)
             -- tangible for these events, we'll do it ourselves with a custom event.
             -- If we rolled, just broadcast the roll over the Comms and let the listening
             -- addons handle it to parse the roll message properly with the needed data.
-            Yipper.Comms:BroadcastMessage(message)
+            Yipper.Comms:BroadcastMessage(message.."||"..UnitGUID("player"))
         end
     elseif event == "CHAT_MSG_ADDON_LOGGED" then
         local prefix, message, channel, sender, target, zoneChannelId, localID, name, instanceID = ...
@@ -105,38 +94,34 @@ function Yipper.Events:OnEvent(event, ...)
         if prefix == addonName then
             -- Since this will just be a roll broadcast by someone,
             -- Add it to the message list as a system message.
-            self:StoreMessage(message, sender, GetChatTypeIndex("SYSTEM"), "CHAT_MSG_SYSTEM")
+            local actualMessage, guid = message:match("^(.+)||(.+)$")
+            self:StoreMessage(actualMessage, guid, GetChatTypeIndex("SYSTEM"), "CHAT_MSG_SYSTEM")
         end
     elseif event == "CHAT_MSG_TEXT_EMOTE" then
-        local message, sender, _, _, _, _, _, _, _, _, lineId, guid = ...
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
 
         -- Because actual emotes work different,
         -- we need to fix the sender in both cases.
         -- If we're the sender, just construct it using the realm.
         if sender == UnitName("player") then
-            sender = UnitName("player") .. "-" .. Yipper.Utils:GetNormalizedRealmName()
-        else
-            -- If the sender is someone else, use their GUID to get the player info.
-            local _, _, _, _, _, name, realmName = GetPlayerInfoByGUID(guid)
-
-            -- Sadly realmName is not returned on same realm emotes
-            -- so manually set it.
-            if realmName == nil or realmName == "" then
-                -- Is nil/empty on the same realm
-                realmName = Yipper.Utils:GetNormalizedRealmName()
-            end
-
-            sender = name .. "-" .. realmName
+            guid = UnitGUID("player")
         end
 
-        self:StoreMessage(message, sender, lineId, event)
+        self:StoreMessage(message, guid, lineId, event)
     end
 end
 
 --- Stores a message with the required arguments for the specific player.
 --- This builds the table with messages and automatically trims it as well
 --- when the maximum amount is exceeded.
-function Yipper.Events:StoreMessage(message, sender, lineId, event)
+function Yipper.Events:StoreMessage(message, guid, lineId, event)
+    -- Since our entire logic hinges on the guid not being a secret,
+    -- we will drop the entire message in case the guid is flagged as secret.
+    -- When you're in combat, you really don't care about RP anyways.
+    if Yipper.Utils:IsSecret(guid) then
+        return
+    end
+
     -- Sanity check, to ensure nothing bad happens in case
     -- the table is not set...
     if not Yipper.DB.Messages then
@@ -145,15 +130,15 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
 
     -- Check if the sender has a record table, might be the first time they're sending
     -- a message.
-    if not Yipper.DB.Messages[sender] then
-        Yipper.DB.Messages[sender] = { }
+    if not Yipper.DB.Messages[guid] then
+        Yipper.DB.Messages[guid] = { }
     end
 
     -- Timestamp the message
     message = Yipper.Utils:TimestampMessage(message)
 
     -- Inject the record in the table.
-    table.insert(Yipper.DB.Messages[sender], {
+    table.insert(Yipper.DB.Messages[guid], {
         ["message"] = message,
         ["lineId"] = lineId,
         ["event"] = event
@@ -166,11 +151,11 @@ function Yipper.Events:StoreMessage(message, sender, lineId, event)
     end
 
     -- Play the notification sound, if applicable.
-    Yipper.Utils:PlayNotification(message, sender)
+    Yipper.Utils:PlayNotification(message, guid)
 
     -- Push the message into the messageFrame if the sender is the user currently
     -- being tracked.
-    if sender == Yipper.TrackedPlayer then
+    if guid == Yipper.TrackedPlayerGuid then
         local colorCodes = Yipper.Constants.ChatColors[event]
 
         -- Check if we're at the bottom
@@ -199,31 +184,28 @@ end
 -- Important: This method is called by a Ticker every 0.1 seconds!
 function Yipper.Events:UpdateTrackedPlayer()
     -- Variable for tracking the new potential target
-    local newTrackedPlayer
+    local newTrackedPlayerGuid
 
     -- Hovering takes precedence, if we're hovering over a player,
     -- that will be our new target.
     -- Otherwise check if the target we have currently have is a player.
-    if UnitName("mouseover") ~= nil and UnitIsPlayer("mouseover") then
-        local name, realm = UnitName("mouseover")
-        newTrackedPlayer = name .. "-" .. (realm or Yipper.Utils:GetNormalizedRealmName())
-    elseif UnitName("target") ~= nil and UnitIsPlayer("target") then
-        local name, realm = UnitName("target")
-        newTrackedPlayer = name .. "-" .. (realm or Yipper.Utils:GetNormalizedRealmName())
+    if UnitGUID("mouseover") ~= nil and UnitIsPlayer("mouseover") then
+        newTrackedPlayerGuid = UnitGUID("mouseover")
+    elseif UnitGUID("target") ~= nil and UnitIsPlayer("target") then
+        newTrackedPlayerGuid = UnitGUID("target")
     end
 
     -- Only update if the newTrackedPlayer is different from the one we're
     -- currently tracking. This accounts for hover, deselect or selecting
     -- a target.
-    if newTrackedPlayer ~= Yipper.TrackedPlayer then
-        Yipper.TrackedPlayer = newTrackedPlayer
+    if newTrackedPlayerGuid ~= Yipper.TrackedPlayerGuid then
+        Yipper.TrackedPlayerGuid = newTrackedPlayerGuid
 
         -- If we have a target or hover, show their messages.
         -- If not, clear the messages.
-        if Yipper.TrackedPlayer then
+        if Yipper.TrackedPlayerGuid then
             Yipper.UI.UpdateDisplayedText()
         else
-            -- No player tracked, clear the frame
             Yipper.messageFrame:Clear()
         end
     end
