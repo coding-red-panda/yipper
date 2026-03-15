@@ -142,7 +142,8 @@ function Yipper.Utils:PlayNotification(message, guid)
         return
     end
 
-    local _, _, _, _, _, playerName, _ = GetPlayerInfoByGUID(guid)
+    local _, _, _, _, _, _, _ = GetPlayerInfoByGUID(guid)
+    local playerName = UnitName("player")
 
     -- Do not play the notification sound for our own messages.
     if guid == UnitGUID("player") then

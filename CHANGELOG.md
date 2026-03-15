@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.1
+
+- Fetch the playerName properly when checking for notification sounds.
+
 ## 2.0.0
 
 - Rewrote Yipper to track data based on the GUID.
