@@ -265,33 +265,39 @@ function Yipper.UI:UpdateDisplayedText()
 
     -- We have a tracked player, display their messages
     for _, messageData in pairs(Yipper.DB.Messages[Yipper.TrackedPlayerGuid]) do
-        local colorCodes = Yipper.Constants.ChatColors[messageData.event]
-        local message = messageData.message
+        Yipper.UI:AddMessageToFrame(messageData, messageData.event)
+    end
+end
 
-        -- Safety check, we might have corrupt data in the table
-        -- Will resolve over time as table clears out, but don't want to crash users.
-        if colorCodes then
-            -- In case of an emote, we need to inject the player's name before the emote
-            -- to make it make sense.
-            -- Use Regex, to strip out the Realm name (After the last -)
-            if messageData.event == "CHAT_MSG_EMOTE" then
-                local _, _, _, _, _, player, _ = GetPlayerInfoByGUID(Yipper.TrackedPlayerGuid)
-                message = player .. " " .. messageData.message
-                message = Yipper.Utils:ColorizeQuotes(message)
-            end
+function Yipper.UI:AddMessageToFrame(messageData, event)
+    local colorCodes = Yipper.Constants.ChatColors[event]
 
-            -- Colorize the message based on the keywords and name.
-            local colorizedMessage = Yipper.Utils:ColorizeMessage(message)
+    -- Safety check, we might have corrupt data in the table
+    -- Will resolve over time as table clears out, but don't want to crash users.
+    if colorCodes then
+        -- In case of an emote, we need to inject the player's name before the emote
+        -- to make it make sense.
+        -- Use Regex, to strip out the Realm name (After the last -)
+        if event == "CHAT_MSG_EMOTE" then
+            local _, _, _, _, _, player, _ = GetPlayerInfoByGUID(Yipper.TrackedPlayerGuid)
+            message = player .. " " .. messageData.message
+            message = Yipper.Utils:ColorizeQuotes(message)
+        end
 
-            -- Add the message with the correct color codes.
-            -- The method needs values between 0 - 1, so divide the values by 255.
-            Yipper.messageFrame:AddMessage(
+        -- Timestamp the message
+        local formattedMessage = "[" .. messageData.timestamp .. "] " .. message
+
+        -- Colorize the message based on the keywords and name.
+        local colorizedMessage = Yipper.Utils:ColorizeMessage(formattedMessage)
+
+        -- Add the message with the correct color codes.
+        -- The method needs values between 0 - 1, so divide the values by 255.
+        Yipper.messageFrame:AddMessage(
                 colorizedMessage,
                 colorCodes.r / 255,
                 colorCodes.g / 255,
                 colorCodes.b / 255,
                 messageData.lineId
-            )
-        end
+        )
     end
 end

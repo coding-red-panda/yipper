@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.2
+
+- Fix the emote display issue with the name.
+
 ## 2.0.1
 
 - Fetch the playerName properly when checking for notification sounds.

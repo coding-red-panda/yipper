@@ -134,14 +134,12 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
         Yipper.DB.Messages[guid] = { }
     end
 
-    -- Timestamp the message
-    message = Yipper.Utils:TimestampMessage(message)
-
     -- Inject the record in the table.
     table.insert(Yipper.DB.Messages[guid], {
         ["message"] = message,
         ["lineId"] = lineId,
-        ["event"] = event
+        ["event"] = event,
+        ["timestamp"] = date("%H:%M")
     })
 
     -- If we have exceeded the maximum amount of messages,
@@ -161,12 +159,13 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
         -- Check if we're at the bottom
         local wasAtBottom = Yipper.messageFrame:AtBottom()
 
-        -- Colorize the message before displaying it
-        local coloredMessage = Yipper.Utils:ColorizeMessage(message)
-
-        -- Add the message with the correct color codes.
-        -- The method needs values between 0 - 1, so divide the values by 255.
-        Yipper.messageFrame:AddMessage(coloredMessage, colorCodes.r / 255, colorCodes.g / 255, colorCodes.b / 255, lineId)
+        -- Push the message into the frame.
+        Yipper.UI:AddMessageToFrame({
+            ["message"] = message,
+            ["lineId"] = lineId,
+            ["event"] = event,
+            ["timestamp"] = date("%H:%M")
+        }, event)
 
         if not wasAtBottom then
             Yipper.messageFrame:ScrollUp()

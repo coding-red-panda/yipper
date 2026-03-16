@@ -15,17 +15,6 @@ function Yipper.Utils:IsSecret(value)
     return issecretvalue(value) and not canaccessvalue(value)
 end
 
--- Yipper.Utils - TimestampMessage
---
--- Puts a timestamp in front of the message using the moment in time that the function is called.
--- This allows us to preserve timestamp history between sessions, since the Window itself will be
--- bound to the system after reloads.
-function Yipper.Utils:TimestampMessage(message)
-    local time_string = date("%H:%M")
-
-    return "[" .. time_string .. "] " .. message
-end
-
 -- Yipper.Utils - IsUpdated
 --
 -- Returns a boolean if Yipper has been updated.
