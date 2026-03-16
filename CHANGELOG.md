@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.3
+
+- Fix code after refactor.
+
 ## 2.0.2
 
 - Fix the emote display issue with the name.

@@ -271,6 +271,7 @@ end
 
 function Yipper.UI:AddMessageToFrame(messageData, event)
     local colorCodes = Yipper.Constants.ChatColors[event]
+    local message = messageData.message
 
     -- Safety check, we might have corrupt data in the table
     -- Will resolve over time as table clears out, but don't want to crash users.
