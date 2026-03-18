@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.5
+
+- Ignore text emote events without GUID
+
 ## 2.0.4
 
 - Ignore emote events without GUID

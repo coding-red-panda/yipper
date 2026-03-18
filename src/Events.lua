@@ -107,6 +107,12 @@ function Yipper.Events:OnEvent(event, ...)
     elseif event == "CHAT_MSG_TEXT_EMOTE" then
         local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
 
+        -- NPC Emotes in instances do not have a GUID.
+        -- Ignore these events
+        if guid == nil then
+            return
+        end
+
         -- Because actual emotes work different,
         -- we need to fix the sender in both cases.
         -- If we're the sender, just construct it using the realm.
