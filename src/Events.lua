@@ -31,6 +31,13 @@ function Yipper.Events:OnEvent(event, ...)
         self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_EMOTE" then
         local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+
+        -- NPC Emotes in instances do not have a GUID.
+        -- Ignore these events
+        if guid == nil then
+            return
+        end
+
         self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_GUILD" then
         local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
