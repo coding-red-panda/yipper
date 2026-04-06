@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.6
+
+- Account for the playerGUID being secret in proving grounds.
+
 ## 2.0.5
 
 - Ignore text emote events without GUID

@@ -251,12 +251,16 @@ end
 
 -- Updates the displayed text in the mainFrame,
 -- using the data stored in the AddOn.
+--
+-- The value will check whether the GUID is considered secret.
+-- When the value is secret, we're not going to do anything, thanks Blizzard.
 function Yipper.UI:UpdateDisplayedText()
     -- Return if there's no player tracked,
     -- or there's no messages for the player
     if Yipper.TrackedPlayerGuid == nil or   -- No player tracked
         Yipper.DB.Messages == nil or    -- new character, no messages yet initializes
-        Yipper.DB.Messages[Yipper.TrackedPlayerGuid] == nil then -- Player has not produced messages
+        Yipper.DB.Messages[Yipper.TrackedPlayerGuid] == nil or -- Player has not produced messages
+        Yipper.Utils:IsSecret(Yipper.TrackedPlayerGuid) then -- Value is a secret, don't bother...
         return
     end
 

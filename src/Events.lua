@@ -194,6 +194,10 @@ end
 --- 3. Set to nil in all other cases.
 --
 -- Important: This method is called by a Ticker every 0.1 seconds!
+--
+-- The value being tracked here can become secret in the Proving Grounds
+-- Because blizzard decided in their wisdom that the GUID is secret there,
+-- as well as using fake player values.
 function Yipper.Events:UpdateTrackedPlayer()
     -- Variable for tracking the new potential target
     local newTrackedPlayerGuid
