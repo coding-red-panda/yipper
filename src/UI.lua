@@ -48,6 +48,10 @@ function Yipper.UI:Init()
         Yipper.DB.ShowWindow = true
         Yipper.UI:UpdateDisplayedText()
     end)
+    Yipper.mainFrame:SetScript("OnHide", function()
+        Yipper.DB.ShowWindow = false
+        Yipper.UI:SavePosition()
+    end)
 
     -- Make it resizable
     Yipper.mainFrame:SetResizable(true)

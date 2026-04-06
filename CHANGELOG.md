@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.7
+
+- Adjust the display settings for Yipper main frame.
+
 ## 2.0.6
 
 - Account for the playerGUID being secret in proving grounds.
