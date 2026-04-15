@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.8
+
+- Bump TOC for Patch 12.0.5
+
 ## 2.0.7
 
 - Adjust the display settings for Yipper main frame.
