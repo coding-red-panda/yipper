@@ -211,6 +211,13 @@ function Yipper.Events:UpdateTrackedPlayer()
         newTrackedPlayerGuid = UnitGUID("target")
     end
 
+    -- Do not proceed if the Guid is a secret.
+    -- In PropHunt we're able to track players, but their values are secret.
+    -- Attempting anything will just break the AddOn.
+    if Yipper.Utils:IsSecret(newTrackedPlayerGuid) then
+        return
+    end
+
     -- Only update if the newTrackedPlayer is different from the one we're
     -- currently tracking. This accounts for hover, deselect or selecting
     -- a target.

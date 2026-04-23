@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.0.9
+
+- Do not track players during Prop Hunt, it's "secret" and cheating.
+
 ## 2.0.8
 
 - Bump TOC for Patch 12.0.5
