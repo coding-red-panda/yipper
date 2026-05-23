@@ -68,12 +68,17 @@ function Yipper:OnEvent(event, ...)
                 end
             end
 
-            -- Fix the NotificationColor.
-            -- If any of the components are above 1 as value, reset it to the default
-            -- value. Code will be extra pedantic to ensure edge-cases are covered.
+            -- Migrate the NotificationColor from the 0-1 range to the 0-255 range.
+            -- Older versions stored the color components as 0-1, but the constants now
+            -- use the 0-255 range to stay consistent with the other color constants.
             local c = Yipper.DB.NotificationColor
-            if c ~= nil and ((c.r ~= nil and c.r > 1) or (c.g ~= nil and c.g > 1) or (c.b ~= nil and c.b > 1)) then
-                Yipper.DB.NotificationColor = Yipper.Constants.NotificationColor
+            if c ~= nil and c.r ~= nil and c.g ~= nil and c.b ~= nil
+                    and c.r <= 1 and c.g <= 1 and c.b <= 1 then
+                Yipper.DB.NotificationColor = {
+                    ["r"] = c.r * 255,
+                    ["g"] = c.g * 255,
+                    ["b"] = c.b * 255
+                }
             end
         end
 

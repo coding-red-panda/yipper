@@ -253,11 +253,15 @@ function Yipper.UI:UpdateHeaderText()
     end
 end
 
+--- Yipper.UI - UpdateDisplayedText
 -- Updates the displayed text in the mainFrame,
 -- using the data stored in the AddOn.
 --
 -- The value will check whether the GUID is considered secret.
 -- When the value is secret, we're not going to do anything, thanks Blizzard.
+--
+-- Since our message structure contains a timestamp when the message was processed,
+-- we will grey it out if its older than 5 minutes, to keep the focus on recent data.
 function Yipper.UI:UpdateDisplayedText()
     -- Return if there's no player tracked,
     -- or there's no messages for the player
@@ -273,13 +277,25 @@ function Yipper.UI:UpdateDisplayedText()
 
     -- We have a tracked player, display their messages
     for _, messageData in pairs(Yipper.DB.Messages[Yipper.TrackedPlayerGuid]) do
-        Yipper.UI:AddMessageToFrame(messageData, messageData.event)
+        Yipper.UI:AddMessageToFrame(messageData)
     end
 end
 
-function Yipper.UI:AddMessageToFrame(messageData, event)
-    local colorCodes = Yipper.Constants.ChatColors[event]
+--- Yipper.UI - AddMessageToFrame
+-- Looks at the message data and adds the content to the frame.
+-- Relies on the epoch to determine fading, and the attributes to
+-- properly colorize and decorate the message.
+-- @param messageData The structure message data to display.
+-- @return null
+function Yipper.UI:AddMessageToFrame(messageData)
+    local colorCodes = Yipper.Constants.ChatColors[messageData.event]
     local message = messageData.message
+
+    -- Check if the message needs to be faded out.
+    -- This is done when its older than 5 minutes
+    if messageData.epoch and (time() - messageData.epoch) > Yipper.Constants.MessageAgeInSeconds then
+        colorCodes = Yipper.Constants.FadedColor
+    end
 
     -- Safety check, we might have corrupt data in the table
     -- Will resolve over time as table clears out, but don't want to crash users.
@@ -287,7 +303,7 @@ function Yipper.UI:AddMessageToFrame(messageData, event)
         -- In case of an emote, we need to inject the player's name before the emote
         -- to make it make sense.
         -- Use Regex, to strip out the Realm name (After the last -)
-        if event == "CHAT_MSG_EMOTE" then
+        if messageData.event == "CHAT_MSG_EMOTE" then
             local _, _, _, _, _, player, _ = GetPlayerInfoByGUID(Yipper.TrackedPlayerGuid)
             message = player .. " " .. messageData.message
             message = Yipper.Utils:ColorizeQuotes(message)

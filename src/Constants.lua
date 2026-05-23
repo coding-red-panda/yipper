@@ -3,12 +3,12 @@
 -- This file is responsible for defining constants that are used across multiple
 -- files in the Addon. It should be loaded first.
 
-local addonName, Yipper = ...
+local _, Yipper = ...
 
 Yipper.Constants = {}
 
 -- Track our version in case we need to do something breaking
-Yipper.Constants.VERSION = "2.0.9"
+Yipper.Constants.VERSION = "2.1.0"
 
 -- Define the list of chat events we want to listen to
 Yipper.Constants.ChatEvents = {
@@ -68,7 +68,9 @@ Yipper.Constants.Sounds = {
 }
 
 Yipper.Constants.BlackColor = { ["r"] = 0, ["g"] = 0, ["b"] = 0 }
-Yipper.Constants.NotificationColor = { ["r"] = 1, ["g"] = 0, ["b"] = 0 }
+Yipper.Constants.FadedColor = { ["r"] = 169, ["g"] = 169, ["b"] = 169 }
+Yipper.Constants.NotificationColor = { ["r"] = 255, ["g"] = 0, ["b"] = 0 }
 Yipper.Constants.Alpha = 100
 Yipper.Constants.FontSize = 12
 Yipper.Constants.CommsChannel = "YipperComms"
+Yipper.Constants.MessageAgeInSeconds = 300

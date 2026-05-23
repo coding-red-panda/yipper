@@ -3,6 +3,12 @@ local addonName, Yipper = ...
 Yipper.Events = {}
 
 --- Initialises the Chat module and registers the required events
+-- Registers all the events that Yipper listens to, and sets up two dedicated timers:
+--
+-- _trackedPlayerTicker: Fires every 100ms to check which player is tracked.
+-- _messageTicker: Fires every minute to refresh the messages and their fading color.
+--
+-- @return nil
 function Yipper.Events:Init()
     for _, event in pairs(Yipper.Constants.ChatEvents) do
         Yipper.mainFrame:RegisterEvent(event)
@@ -14,6 +20,16 @@ function Yipper.Events:Init()
     if not self._trackedPlayerTicker then
         self._trackedPlayerTicker = C_Timer.NewTicker(0.1, function()
             self:UpdateTrackedPlayer()
+        end)
+    end
+
+    -- Set up a timer that will refresh the messages in the chat
+    -- frame every minute, to allow us to properly apply the coloring.
+    -- This can be achieved by simply wiping the messages and then
+    -- adding them all on the fly.
+    if not self._messageTicker then
+        self._messageTicker = C_Timer.NewTicker(60, function()
+            Yipper.UI:UpdateDisplayedText()
         end)
     end
 end
@@ -152,7 +168,8 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
         ["message"] = message,
         ["lineId"] = lineId,
         ["event"] = event,
-        ["timestamp"] = date("%H:%M")
+        ["timestamp"] = date("%H:%M"),
+        ["epoch"] = time()
     })
 
     -- If we have exceeded the maximum amount of messages,
@@ -167,8 +184,6 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
     -- Push the message into the messageFrame if the sender is the user currently
     -- being tracked.
     if guid == Yipper.TrackedPlayerGuid then
-        local colorCodes = Yipper.Constants.ChatColors[event]
-
         -- Check if we're at the bottom
         local wasAtBottom = Yipper.messageFrame:AtBottom()
 
@@ -177,8 +192,9 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
             ["message"] = message,
             ["lineId"] = lineId,
             ["event"] = event,
-            ["timestamp"] = date("%H:%M")
-        }, event)
+            ["timestamp"] = date("%H:%M"),
+            ["epoch"] = time()
+        })
 
         if not wasAtBottom then
             Yipper.messageFrame:ScrollUp()

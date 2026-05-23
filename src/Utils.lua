@@ -96,7 +96,7 @@ function Yipper.Utils:ColorizeMessage(message)
 
     local playerName = UnitName("player")
     local color = Yipper.DB.NotificationColor or Yipper.Constants.NotificationColor
-    local colorCode = string.format("%02X%02X%02X", color.r * 255, color.g * 255, color.b * 255)
+    local colorCode = string.format("%02X%02X%02X", color.r, color.g, color.b)
     local tagStart = "\124cFF"
     local tagEnd = "\124r"
 
@@ -112,8 +112,20 @@ function Yipper.Utils:ColorizeMessage(message)
 
     -- Colorize keywords
     for _, keyword in ipairs(Yipper.DB.Keywords) do
-        if keyword ~= nil and keyword ~= "" and string.find(string.lower(message), string.lower(keyword), 1, true) then
-            message = self:ReplaceInsensitiveWithColor(message, keyword, tagStart .. colorCode, tagEnd)
+        if keyword ~= nil and keyword ~= "" and string.find(message, keyword, 1, true) then
+            message = self:ReplaceSensitiveWithColor(message, keyword, tagStart .. colorCode, tagEnd)
+        end
+    end
+
+    -- Colorize emotes, currently hardcoded to *
+    local emoteColor = Yipper.Constants.ChatColors["CHAT_MSG_EMOTE"]
+    local emoteColorCode = string.format("%02X%02X%02X", emoteColor.r, emoteColor.g, emoteColor.b)
+    local seenEmotes = {}
+
+    for emote in string.gmatch(message, "%*[^%*]+%*") do
+        if not seenEmotes[emote] then
+            seenEmotes[emote] = true
+            message = self:ReplaceInsensitiveWithColor(message, emote, tagStart .. emoteColorCode, tagEnd)
         end
     end
 
@@ -155,7 +167,7 @@ function Yipper.Utils:PlayNotification(message, guid)
         for _, value in ipairs(Yipper.DB.Keywords) do
             -- Account for the value being nil or an empty string.
             -- If we have a match otherwise, set the flag to true and break the loop.
-            if value ~= nil and value ~= "" and string.find(string.lower(message), string.lower(value), 1, true) then
+            if value ~= nil and value ~= "" and string.find(message, value, 1, true) then
                 shouldNotify = true
                 break  -- No need to check more keywords
             end
@@ -163,8 +175,10 @@ function Yipper.Utils:PlayNotification(message, guid)
     end
 
     -- Play the notification sound if we have to.
+    -- And also highlight the taskbar icon briefly.
     if shouldNotify then
         PlaySound(Yipper.DB.NotificationSound)
+        FlashClientIcon(true)
     end
 end
 
@@ -202,6 +216,24 @@ function Yipper.Utils:ReplaceInsensitiveWithColor(str, find, colorStart, colorEn
 
     -- Replace while preserving the original matched case
     return string.gsub(str, pattern, function(matched)
+        return colorStart .. matched .. colorEnd
+    end)
+end
+
+--- Yipper.Utils - ReplaceSensitiveWithColor
+--
+-- Helper function for case-sensitive replace of the specified string.
+--
+-- str: The string to perform the replacement on.
+-- find: The value we're looking for, case-sensitive
+-- colorStart: The color starting tag to apply to the replaced value.
+-- colorEnd: The color ending tag to apply the replaced value.
+function Yipper.Utils:ReplaceSensitiveWithColor(str, find, colorStart, colorEnd)
+    -- Escape special pattern characters
+    local findEscaped = string.gsub(find, "([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
+
+    -- Replace while preserving the original matched case
+    return string.gsub(str, findEscaped, function(matched)
         return colorStart .. matched .. colorEnd
     end)
 end

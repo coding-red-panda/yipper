@@ -1,5 +1,15 @@
 ﻿# Yipper Changelog
 
+## 2.1.0
+
+- Prepared AddOn for the 12.0.7 patch.
+- Added taskbar notification on receiving messages.
+- Grey out messages when older than 5 minutes.
+- Started documenting changes using LDoc annotation.
+- Emotes in text (using the * notation) are now properly colorized.
+- All colors in code now use the 0-255 range.
+- Keyword matching is now case-sensitive
+
 ## 2.0.9
 
 - Do not track players during Prop Hunt, it's "secret" and cheating.

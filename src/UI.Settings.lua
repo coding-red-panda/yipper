@@ -69,7 +69,7 @@ function Yipper.UI.Settings:Init()
     local headerText = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     headerText:SetPoint("TOPLEFT", headerFrame, "TOPLEFT", 0, 0)
     headerText:SetPoint("BOTTOMRIGHT", headerFrame, "BOTTOMRIGHT", 0, 0)
-    headerText:SetText(addonName .. " Settings")
+    headerText:SetText("Yipper Settings")
     headerText:SetJustifyH("LEFT")
     headerText:SetJustifyV("MIDDLE")
 
@@ -222,7 +222,7 @@ function Yipper.UI.Settings:AddAlphaSettings()
 
     local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
 
-    slider:SetWidth(340, 20)
+    slider:SetWidth(330, 20)
     slider:SetPoint("TOPLEFT", 30, -130)
     slider:Init(Yipper.DB.WindowAlpha or 100, options.minValue, options.maxValue, options.steps, options.formatters)
 
@@ -254,7 +254,7 @@ function Yipper.UI.Settings:AddFontSizeSettings()
 
     local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
 
-    slider:SetWidth(340)
+    slider:SetWidth(330)
     slider:SetPoint("TOPLEFT", 30, -170)
     slider:Init(
             Yipper.DB.FontSize or Yipper.Constants.FontSize,
@@ -397,14 +397,15 @@ function Yipper.UI.Settings:AddNotificationColorPicker()
     colorButton.Texture = colorButton:CreateTexture()
     colorButton.Texture:SetAllPoints()
     colorButton.Texture:SetTexture("Interface\\BUTTONS\\WHITE8X8")-- just a white square but could be anything (presumably white)
-    colorButton.Texture:SetVertexColor(color.r, color.g, color.b)
+    colorButton.Texture:SetVertexColor(color.r / 255, color.g / 255, color.b / 255)
 
     colorButton:SetScript("OnClick", function(_)
         local function OnColorChanged()
             local red, green, blue = ColorPickerFrame:GetColorRGB()
 
-            -- Store the selected color
-            Yipper.DB.NotificationColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+            -- Store the selected color in the 0-255 range to stay consistent
+            -- with the other color constants.
+            Yipper.DB.NotificationColor = { ["r"] = red * 255, ["g"] = green * 255, ["b"] = blue * 255 }
 
             -- Update UI components
             colorButton.Texture:SetVertexColor(red, green, blue)
@@ -413,8 +414,9 @@ function Yipper.UI.Settings:AddNotificationColorPicker()
         local function OnCancel()
             local red, green, blue = ColorPickerFrame:GetPreviousValues()
 
-            -- Store the selected color
-            Yipper.DB.NotificationColor = { ["r"] = red, ["g"] = green, ["b"] = blue }
+            -- Store the selected color in the 0-255 range to stay consistent
+            -- with the other color constants.
+            Yipper.DB.NotificationColor = { ["r"] = red * 255, ["g"] = green * 255, ["b"] = blue * 255 }
 
             -- Update UI components
             colorButton.Texture:SetVertexColor(red, green, blue)
@@ -427,9 +429,9 @@ function Yipper.UI.Settings:AddNotificationColorPicker()
             cancelFunc = OnCancel,
             hasOpacity = false,
             opacity = 100,
-            r = storedColor.r,
-            g = storedColor.g,
-            b = storedColor.b,
+            r = storedColor.r / 255,
+            g = storedColor.g / 255,
+            b = storedColor.b / 255,
         }
 
         ColorPickerFrame:SetupColorPickerAndShow(options)
