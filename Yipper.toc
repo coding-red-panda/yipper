@@ -23,7 +23,7 @@ src/Constants.lua
 src/Utils.lua
 src/Comms.lua
 src/UI.lua
-src/UI.Settings.lua
+ui/YipperSettingsFrameTemplate.xml
 src/Minimap.lua
 src/Events.lua
 src/EventQueue.lua
