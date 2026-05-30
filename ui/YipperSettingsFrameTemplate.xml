@@ -1,0 +1,258 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Script file="YipperSettingsFrameTemplate.lua" />
+    <Frame name="Yipper_SettingsFrame_Template"
+           inherits="BackdropTemplate"
+           toplevel="true"
+           enableMouse="true"
+           virtual="true"
+           hidden="true"
+           movable="true">
+        <Size x="400" y="600" />
+        <Anchors>
+            <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" x="0" y="0" />
+        </Anchors>
+        <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background"
+                  edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+            <EdgeSize val="16" />
+            <BackgroundInsets>
+                <AbsInset left="4" right="3" top="4" bottom="3" />
+            </BackgroundInsets>
+        </Backdrop>
+        <Frames>
+            <!-- Close button (top-right) -->
+            <Button parentKey="CloseButton" inherits="UIPanelCloseButton">
+                <Size x="20" y="20" />
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-2" y="-2" />
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():Hide();
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <!-- Header band -->
+            <Frame parentKey="HeaderFrame">
+                <Size y="30" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="6" y="-4" />
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-45" y="-4" />
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString parentKey="Text"
+                                    inherits="GameFontNormalLarge"
+                                    text="Yipper Settings"
+                                    justifyH="LEFT"
+                                    justifyV="MIDDLE">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="0" />
+                                <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0" />
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+
+            <!-- Minimap toggle -->
+            <CheckButton parentKey="MinimapCheckbox" inherits="ChatConfigCheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-35" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddMinimapSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </CheckButton>
+
+            <!-- Header toggle -->
+            <CheckButton parentKey="HeaderCheckbox" inherits="ChatConfigCheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-65" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddHeaderSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </CheckButton>
+
+            <!-- Tracker toggle -->
+            <CheckButton parentKey="TrackerCheckbox" inherits="ChatConfigCheckButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-95" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddTrackerSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </CheckButton>
+
+            <!-- Window alpha slider -->
+            <Frame parentKey="AlphaSlider" inherits="MinimalSliderWithSteppersTemplate">
+                <Size x="330" y="32" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-130" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddAlphaSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+
+            <!-- Font size slider -->
+            <Frame parentKey="FontSizeSlider" inherits="MinimalSliderWithSteppersTemplate">
+                <Size x="330" y="32" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-170" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddFontSizeSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+
+            <!-- Background color picker -->
+            <Button parentKey="BackgroundColorButton" inherits="UIPanelButtonTemplate" text="Set Background Color">
+                <Size x="340" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-225" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Texture" file="Interface\BUTTONS\WHITE8X8" setAllPoints="true" />
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddBackgroundColorPicker(self);
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
+            <!-- Border color picker -->
+            <Button parentKey="BorderColorButton" inherits="UIPanelButtonTemplate" text="Set Border Color">
+                <Size x="340" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-255" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Texture" file="Interface\BUTTONS\WHITE8X8" setAllPoints="true" />
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddBorderColorPicker(self);
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
+            <!-- Notification color picker -->
+            <Button parentKey="NotificationColorButton" inherits="UIPanelButtonTemplate" text="Set Notification Color">
+                <Size x="340" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-285" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Texture" file="Interface\BUTTONS\WHITE8X8" setAllPoints="true" />
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddNotificationColorPicker(self);
+                    </OnLoad>
+                </Scripts>
+            </Button>
+
+            <!-- Notification sound dropdown -->
+            <DropdownButton parentKey="NotificationDropdown" inherits="UIPanelButtonTemplate" text="Select Notification Sound">
+                <Size x="340" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-310" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Texture" file="Interface\BUTTONS\WHITE8X8" setAllPoints="true" />
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:NotificationSelectionSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </DropdownButton>
+
+            <!-- Font selection dropdown -->
+            <DropdownButton parentKey="FontDropdown" inherits="UIPanelButtonTemplate" text="Select Font">
+                <Size x="340" y="20" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-340" />
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture parentKey="Texture" file="Interface\BUTTONS\WHITE8X8" setAllPoints="true" />
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Yipper.SettingsFrame:AddFontSelectionSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </DropdownButton>
+
+            <!-- Keyword editbox -->
+            <EditBox parentKey="KeywordEditBox" inherits="BackdropTemplate" enableMouse="true" multiLine="true">
+                <Size x="340" y="1" />
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="30" y="-390" />
+                </Anchors>
+                <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+                    <EdgeSize val="16" />
+                    <BackgroundInsets>
+                        <AbsInset left="4" right="3" top="4" bottom="3" />
+                    </BackgroundInsets>
+                </Backdrop>
+                <FontString inherits="ChatFontNormal" />
+                <Layers>
+                    <Layer level="BORDER">
+                        <FontString parentKey="Label" inherits="GameFontNormal" justifyH="RIGHT" text="Additional Keywords - comma separated">
+                            <Anchors>
+                                <Anchor point="CENTER" relativePoint="TOP" x="0" y="10" />
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        self:SetBackdropColor(0, 0, 0, 1);
+                        self:SetBackdropBorderColor(0.4, 0.4, 0.4, 1);
+                        self:SetTextInsets(4, 4, 3, 3);
+                        Yipper.SettingsFrame:KeywordSettings(self);
+                    </OnLoad>
+                </Scripts>
+            </EditBox>
+        </Frames>
+
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton");
+                Yipper.SettingsFrame:OnTemplateLoaded(self);
+            </OnLoad>
+            <OnDragStart>
+                self:StartMoving();
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing();
+                Yipper.SettingsFrame:SavePosition();
+            </OnDragStop>
+        </Scripts>
+    </Frame>
+</Ui>

@@ -7,14 +7,6 @@ local _, Yipper = ...
 -- Initialize the module
 Yipper.Utils = {}
 
--- Yipper.Utils - IsSecret
---
--- Function that returns true when the passed in data is a secret
--- and not accessible for safe usage.
-function Yipper.Utils:IsSecret(value)
-    return issecretvalue(value) and not canaccessvalue(value)
-end
-
 -- Yipper.Utils - IsUpdated
 --
 -- Returns a boolean if Yipper has been updated.
@@ -90,7 +82,7 @@ end
 -- TODO: Expand to include the TRP3 Profile at some point.
 function Yipper.Utils:ColorizeMessage(message)
     -- Don't bother editing the message if we can't work with it.
-    if self:IsSecret(message) then
+    if Yipper.API:IsSecret(message) then
         return message
     end
 

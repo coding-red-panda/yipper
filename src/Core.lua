@@ -92,8 +92,8 @@ function Yipper:OnEvent(event, ...)
         end
 
         -- If the Yipper UI Settings is available, initialize it
-        if Yipper.UI.Settings then
-            Yipper.UI.Settings:Init()
+        if Yipper.SettingsFrame then
+            Yipper.SettingsFrame:Init()
         end
 
         -- If the Yipper minimap is available, initialize it
