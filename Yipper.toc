@@ -17,7 +17,9 @@
 ## Category-zhCN: 角色扮演
 ## Category-zhTW: 角色扮演
 
-Yipper.Api.lua
+source\Yipper.Api.lua
+source\EventListener.lua
+source\PlayerTracker.lua
 
 src/Constants.lua
 src/Utils.lua
@@ -25,6 +27,5 @@ src/Comms.lua
 src/UI.lua
 ui/YipperSettingsFrameTemplate.xml
 src/Minimap.lua
-src/Events.lua
 src/EventQueue.lua
 src/Core.lua
