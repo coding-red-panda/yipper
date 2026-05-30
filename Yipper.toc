@@ -1,5 +1,5 @@
 ## Interface: 120007, 120005
-## Version: 2.1.0
+## Version: 3.0.0
 ## Title: Yipper
 ## Notes: AddOn to track chat messages from players
 ## Author: Keento
@@ -16,6 +16,8 @@
 ## Category-ruRU: Ролевая игра
 ## Category-zhCN: 角色扮演
 ## Category-zhTW: 角色扮演
+
+Yipper.Api.lua
 
 src/Constants.lua
 src/Utils.lua

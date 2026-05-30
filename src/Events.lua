@@ -88,7 +88,7 @@ function Yipper.Events:OnEvent(event, ...)
         -- Do not attempt to process messages when they are secret.
         -- If we're dealing with a secret system message, just ignore it.
         -- Means the player is in combat, and these messages are useless for us.
-        if Yipper.Utils:IsSecret(message) then
+        if Yipper.API:IsSecret(message) then
             return
         end
 
@@ -147,7 +147,7 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
     -- Since our entire logic hinges on the guid not being a secret,
     -- we will drop the entire message in case the guid is flagged as secret.
     -- When you're in combat, you really don't care about RP anyways.
-    if Yipper.Utils:IsSecret(guid) then
+    if Yipper.API:IsSecret(guid) then
         return
     end
 
@@ -230,7 +230,7 @@ function Yipper.Events:UpdateTrackedPlayer()
     -- Do not proceed if the Guid is a secret.
     -- In PropHunt we're able to track players, but their values are secret.
     -- Attempting anything will just break the AddOn.
-    if Yipper.Utils:IsSecret(newTrackedPlayerGuid) then
+    if Yipper.API:IsSecret(newTrackedPlayerGuid) then
         return
     end
 

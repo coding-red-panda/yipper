@@ -268,7 +268,7 @@ function Yipper.UI:UpdateDisplayedText()
     if Yipper.TrackedPlayerGuid == nil or   -- No player tracked
         Yipper.DB.Messages == nil or    -- new character, no messages yet initializes
         Yipper.DB.Messages[Yipper.TrackedPlayerGuid] == nil or -- Player has not produced messages
-        Yipper.Utils:IsSecret(Yipper.TrackedPlayerGuid) then -- Value is a secret, don't bother...
+        Yipper.API:IsSecret(Yipper.TrackedPlayerGuid) then -- Value is a secret, don't bother...
         return
     end
 

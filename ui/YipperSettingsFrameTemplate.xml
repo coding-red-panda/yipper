@@ -1,0 +1,45 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Script file="YipperSettingsFrameTemplate.lua" />
+    <Frame name="Yipper_SettingsFrame_Template"
+           parent="UIParent"
+           toplevel="true"
+           enableMouse="true"
+           virtual="true"
+           hidden="true"
+           moveable="true">
+        <Size x="400" y="600" />
+        <Anchors>
+
+        </Anchors>
+        <Frames>
+            <Button name="$parent_Close_Button" parent="$parent" inherits="UIPanelCloseButton">
+                <Size x="20" y="20" />
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-2" y="-2" />
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self:RegisterForClicks("AnyUp", "AnyDown");
+                    </OnLoad>
+                    <OnClick>
+                        self:GetParent():Hide();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Frame name="$parent_Header_Frame"
+        </Frames>
+
+        <Scripts>
+            <OnLoad>
+                self:RegisterForDrag("LeftButton");
+            </OnLoad>
+            <OnDragStart>
+                self:StartMoving();
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing();
+                Yipper.UI.Settings:SavePosition();
+            </OnDragStop>
+        </Scripts>
+    </Frame>
+</Ui>
