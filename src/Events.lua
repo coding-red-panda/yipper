@@ -18,7 +18,7 @@ function Yipper.Events:Init()
     -- This helps us in checking whether the mouse has actually
     -- left the unit as well.
     if not Yipper._trackedPlayerTicker then
-        local interval = (Yipper.DB.RefreshInterval or Yipper.Constants.RefreshInterval) / 1000 -- in seconds.
+        local interval = (Yipper.DB.RefreshInterval or Yipper.Constants.RefreshInterval) / 1000.0 -- in seconds.
 
         Yipper._trackedPlayerTicker = C_Timer.NewTicker(interval, function()
             self:UpdateTrackedPlayer()
