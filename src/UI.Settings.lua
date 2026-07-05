@@ -619,7 +619,7 @@ function Yipper.UI.Settings:RefreshIntervalSettings()
             Yipper._trackedPlayerTicker:Cancel()
         end
 
-        local interval = Yipper.DB.RefreshInterval / 1000 -- in seconds.
+        local interval = Yipper.DB.RefreshInterval / 1000.0 -- in seconds.
 
         Yipper._trackedPlayerTicker = C_Timer.NewTicker(interval, function()
             Yipper.Events:UpdateTrackedPlayer()
