@@ -1,4 +1,4 @@
--- Yipper - Constants
+--- Yipper - Constants
 --
 -- This file is responsible for defining constants that are used across multiple
 -- files in the Addon. It should be loaded first.
@@ -74,3 +74,4 @@ Yipper.Constants.Alpha = 100
 Yipper.Constants.FontSize = 12
 Yipper.Constants.CommsChannel = "YipperComms"
 Yipper.Constants.MessageAgeInSeconds = 300
+Yipper.Constants.RefreshInterval = 100

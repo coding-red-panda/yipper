@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.2.0
+
+- Update time is now configurable
+
 ## 2.1.0
 
 - Prepared AddOn for the 12.0.7 patch.

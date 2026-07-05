@@ -89,6 +89,7 @@ function Yipper.UI.Settings:Init()
     self:AddNotificationColorPicker()
     self:NotificationSelectionSettings()
     self:KeywordSettings()
+    self:RefreshIntervalSettings()
 
     -- Define a custom toggle function
     Yipper.settingsFrame.Toggle = function(self)
@@ -584,4 +585,44 @@ function Yipper.UI.Settings:KeywordSettings()
     editBox.Label:SetJustifyH("RIGHT")
     editBox.Label:SetPoint("CENTER", editBox, "TOP", 0, 10)
     editBox.Label:SetText("Additional Keywords - comma separated")
+end
+
+--- Controls the UI and behavior for the Refresh Interval Settings
+--
+-- The refresh interval is the time between checks to determine which user is currently
+-- "selected" by the AddOn by looking at the selected target or mouse hover target.
+-- The function just cancels are recreates the timer when the value on the slider changes.
+function Yipper.UI.Settings:RefreshIntervalSettings()
+    local minvalue = 0
+    local maxValue = 2000
+    local stepValue = 1
+    local options = Settings.CreateSliderOptions(minvalue, maxValue, stepValue)
+    local initValue = Yipper.DB.RefreshInterval or Yipper.Constants.RefreshInterval
+
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value) return value end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Max, function(_) return maxValue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Min, function(_) return minvalue end);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Top, function(_) return "Refresh Timer (ms)" end);
+
+    local slider = CreateFrame("Frame", nil, Yipper.settingsFrame, "MinimalSliderWithSteppersTemplate")
+
+    slider:SetWidth(330, 20)
+    slider:SetPoint("TOPLEFT", 30, -420)
+    slider:Init(initValue, options.minValue, options.maxValue, options.steps, options.formatters)
+
+    -- Event handler for updating the timer.
+    slider:RegisterCallback("OnValueChanged", function(_, value)
+        Yipper.DB.RefreshInterval = value
+
+        -- If there is timer registered, cancel it.
+        if Yipper.Events._trackedPlayerTicker then
+            Yipper.Events._trackedPlayerTicker:Cancel()
+        end
+
+        local interval = Yipper.DB.RefreshInterval / 1000 -- in seconds.
+
+        Yipper.Events._trackedPlayerTicker = C_Timer.NewTicker(interval, function()
+            Yipper.Events:UpdateTrackedPlayer()
+        end)
+    end, slider)
 end
