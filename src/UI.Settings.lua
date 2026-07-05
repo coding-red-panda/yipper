@@ -615,13 +615,13 @@ function Yipper.UI.Settings:RefreshIntervalSettings()
         Yipper.DB.RefreshInterval = value
 
         -- If there is timer registered, cancel it.
-        if Yipper.Events._trackedPlayerTicker then
-            Yipper.Events._trackedPlayerTicker:Cancel()
+        if Yipper._trackedPlayerTicker then
+            Yipper._trackedPlayerTicker:Cancel()
         end
 
         local interval = Yipper.DB.RefreshInterval / 1000 -- in seconds.
 
-        Yipper.Events._trackedPlayerTicker = C_Timer.NewTicker(interval, function()
+        Yipper._trackedPlayerTicker = C_Timer.NewTicker(interval, function()
             Yipper.Events:UpdateTrackedPlayer()
         end)
     end, slider)
