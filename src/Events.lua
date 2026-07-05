@@ -17,8 +17,10 @@ function Yipper.Events:Init()
     -- Set up a timer that will trigger our tracking update
     -- This helps us in checking whether the mouse has actually
     -- left the unit as well.
-    if not self._trackedPlayerTicker then
-        self._trackedPlayerTicker = C_Timer.NewTicker(0.1, function()
+    if not Yipper._trackedPlayerTicker then
+        local interval = (Yipper.DB.RefreshInterval or Yipper.Constants.RefreshInterval) / 1000.0 -- in seconds.
+
+        Yipper._trackedPlayerTicker = C_Timer.NewTicker(interval, function()
             self:UpdateTrackedPlayer()
         end)
     end
@@ -27,8 +29,8 @@ function Yipper.Events:Init()
     -- frame every minute, to allow us to properly apply the coloring.
     -- This can be achieved by simply wiping the messages and then
     -- adding them all on the fly.
-    if not self._messageTicker then
-        self._messageTicker = C_Timer.NewTicker(60, function()
+    if not Yipper._messageTicker then
+        Yipper._messageTicker = C_Timer.NewTicker(60, function()
             Yipper.UI:UpdateDisplayedText()
         end)
     end
@@ -209,7 +211,8 @@ end
 --- 2. Do we have someone selected?
 --- 3. Set to nil in all other cases.
 --
--- Important: This method is called by a Ticker every 0.1 seconds!
+-- Important: This method is called by a Ticker every 0.1 seconds by default!
+--            The value can be configured by the user to be faster or slower.
 --
 -- The value being tracked here can become secret in the Proving Grounds
 -- Because blizzard decided in their wisdom that the GUID is secret there,
