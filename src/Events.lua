@@ -117,6 +117,8 @@ function Yipper.Events:OnEvent(event, ...)
 
         local author, rollResult, rollMin, rollMax = string.match(message, "(.+) rolls (%d+) %((%d+)-(%d+)%)");
 
+        Yipper.Utils:Debug("roll seen: author =", tostring(author), "-- me =", UnitName("player"))
+
         -- Only broadcast our own messages, otherwise every single roll event will be broadcast as "us".
         -- We don't want that, we want the AddOn to receive rolls from other people and process them
         -- accordingly.
@@ -132,9 +134,33 @@ function Yipper.Events:OnEvent(event, ...)
 
         -- We only care about messages for Yipper, ignore everything else.
         if prefix == addonName then
+            Yipper.Utils:Debug("recv: from =", tostring(sender), "channel =", tostring(channel), "raw =", tostring(message))
+
             -- Since this will just be a roll broadcast by someone,
             -- Add it to the message list as a system message.
-            local actualMessage, guid = message:match("^(.+)||(.+)$")
+            --
+            -- The payload is "<roll message>||<sender GUID>". Logged addon
+            -- messages travel through the chat pipeline, which treats "|" as an
+            -- escape character and can collapse "||" into a single "|", so
+            -- accept both forms. The greedy first capture always takes the last
+            -- separator, since a GUID never contains one.
+            local actualMessage, guid = message:match("^(.*)||(.-)$")
+
+            if not guid then
+                actualMessage, guid = message:match("^(.*)|(.-)$")
+            end
+
+            -- If the separator did not survive at all, fall back to the sender
+            -- of the addon message. Everyone who can receive this is in our
+            -- group, so the name resolves to a unit and we can still attribute
+            -- the roll instead of silently dropping it.
+            if guid == nil or guid == "" then
+                actualMessage = actualMessage or message
+                guid = sender and UnitGUID(sender)
+            end
+
+            Yipper.Utils:Debug("recv parsed: message =", tostring(actualMessage), "guid =", tostring(guid))
+
             self:StoreMessage(actualMessage, guid, GetChatTypeIndex("SYSTEM"), "CHAT_MSG_SYSTEM")
         end
     elseif event == "CHAT_MSG_TEXT_EMOTE" then
@@ -173,6 +199,7 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
     -- would blow up on `Yipper.DB.Messages[guid]` with "table index is nil".
     -- There is no unit to track for these, so drop them.
     if guid == nil then
+        Yipper.Utils:Debug("dropped: no GUID, event =", tostring(event))
         return
     end
 

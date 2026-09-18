@@ -15,6 +15,30 @@ function Yipper.Utils:IsSecret(value)
     return issecretvalue(value) and not canaccessvalue(value)
 end
 
+-- Yipper.Utils - Debug
+--
+-- TEMPORARY DIAGNOSTICS. Prints a line to the default chat frame, but only
+-- while debugging is enabled with `/yip debug`, so a normal session stays quiet.
+-- Never pass a value that might be secret: tostring() on one will error.
+function Yipper.Utils:Debug(...)
+    if not Yipper.DB or not Yipper.DB.Debug then
+        return
+    end
+
+    -- The chat frame treats "|" as an escape character when rendering, so a
+    -- payload would display differently from what actually went over the wire.
+    -- Double every pipe in the arguments so the output is literal.
+    local args = { ... }
+
+    for i = 1, select("#", ...) do
+        if type(args[i]) == "string" then
+            args[i] = args[i]:gsub("|", "||")
+        end
+    end
+
+    print("|cFF2A84EB[Yipper]|r", unpack(args))
+end
+
 -- Yipper.Utils - IsFromDiscord
 --
 -- Returns true when the given chat payload originates from Discord through
