@@ -58,10 +58,25 @@ function Yipper.Events:OnEvent(event, ...)
 
         self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_GUILD" then
-        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid, _, _, _, _, _, discordInfo = ...
+
+        -- WoW's Discord integration (Patch 12.1) relays messages from a linked
+        -- Discord channel into guild chat. These arrive without a player GUID,
+        -- and a Discord user is not an in-world unit that can be hovered or
+        -- targeted, so Yipper's GUID-based tracking cannot surface them. Ignore.
+        if Yipper.Utils:IsFromDiscord(discordInfo) then
+            return
+        end
+
         self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_OFFICER" then
-        local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
+        local message, _, _, _, _, _, _, _, _, _, lineId, guid, _, _, _, _, _, discordInfo = ...
+
+        -- See CHAT_MSG_GUILD above: ignore Discord-relayed officer messages.
+        if Yipper.Utils:IsFromDiscord(discordInfo) then
+            return
+        end
+
         self:StoreMessage(message, guid, lineId, event)
     elseif event == "CHAT_MSG_PARTY" then
         local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
@@ -150,6 +165,14 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
     -- we will drop the entire message in case the guid is flagged as secret.
     -- When you're in combat, you really don't care about RP anyways.
     if Yipper.Utils:IsSecret(guid) then
+        return
+    end
+
+    -- Every record is keyed by the sender's GUID. Some messages have no GUID
+    -- (e.g. Discord-relayed guild chat, or certain system/NPC events), which
+    -- would blow up on `Yipper.DB.Messages[guid]` with "table index is nil".
+    -- There is no unit to track for these, so drop them.
+    if guid == nil then
         return
     end
 

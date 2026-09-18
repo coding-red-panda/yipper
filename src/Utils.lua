@@ -15,6 +15,16 @@ function Yipper.Utils:IsSecret(value)
     return issecretvalue(value) and not canaccessvalue(value)
 end
 
+-- Yipper.Utils - IsFromDiscord
+--
+-- Returns true when the given chat payload originates from Discord through
+-- WoW's guild <-> Discord integration (Patch 12.1). These messages are relayed
+-- into guild/officer chat with a nil player GUID and no in-world unit, so they
+-- cannot be hovered, targeted or tracked by Yipper's GUID-based model.
+function Yipper.Utils:IsFromDiscord(discordInfo)
+    return discordInfo ~= nil and discordInfo.fromDiscord == true
+end
+
 -- Yipper.Utils - IsUpdated
 --
 -- Returns a boolean if Yipper has been updated.
