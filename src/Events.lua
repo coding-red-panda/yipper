@@ -119,49 +119,15 @@ function Yipper.Events:OnEvent(event, ...)
 
         Yipper.Utils:Debug("roll seen: author =", tostring(author), "-- me =", UnitName("player"))
 
-        -- Only broadcast our own messages, otherwise every single roll event will be broadcast as "us".
-        -- We don't want that, we want the AddOn to receive rolls from other people and process them
-        -- accordingly.
-        if author == UnitName("player") then
-            -- Because Blizzard in all their wisdom decided not to include the realm or anything
-            -- tangible for these events, we'll do it ourselves with a custom event.
-            -- If we rolled, just broadcast the roll over the Comms and let the listening
-            -- addons handle it to parse the roll message properly with the needed data.
-            Yipper.Comms:BroadcastMessage(message.."||"..UnitGUID("player"))
-        end
-    elseif event == "CHAT_MSG_ADDON_LOGGED" then
-        local prefix, message, channel, sender, target, zoneChannelId, localID, name, instanceID = ...
+        -- Attribute the roll locally. The system message carries only a name,
+        -- so resolve it to a GUID ourselves. This works for anyone we can
+        -- identify, whether or not they run Yipper, and covers our own roll.
+        local rollerGuid = Yipper.Players:Resolve(author)
 
-        -- We only care about messages for Yipper, ignore everything else.
-        if prefix == addonName then
-            Yipper.Utils:Debug("recv: from =", tostring(sender), "channel =", tostring(channel), "raw =", tostring(message))
+        Yipper.Utils:Debug("roll resolved:", tostring(author), "->", tostring(rollerGuid))
 
-            -- Since this will just be a roll broadcast by someone,
-            -- Add it to the message list as a system message.
-            --
-            -- The payload is "<roll message>||<sender GUID>". Logged addon
-            -- messages travel through the chat pipeline, which treats "|" as an
-            -- escape character and can collapse "||" into a single "|", so
-            -- accept both forms. The greedy first capture always takes the last
-            -- separator, since a GUID never contains one.
-            local actualMessage, guid = message:match("^(.*)||(.-)$")
-
-            if not guid then
-                actualMessage, guid = message:match("^(.*)|(.-)$")
-            end
-
-            -- If the separator did not survive at all, fall back to the sender
-            -- of the addon message. Everyone who can receive this is in our
-            -- group, so the name resolves to a unit and we can still attribute
-            -- the roll instead of silently dropping it.
-            if guid == nil or guid == "" then
-                actualMessage = actualMessage or message
-                guid = sender and UnitGUID(sender)
-            end
-
-            Yipper.Utils:Debug("recv parsed: message =", tostring(actualMessage), "guid =", tostring(guid))
-
-            self:StoreMessage(actualMessage, guid, GetChatTypeIndex("SYSTEM"), "CHAT_MSG_SYSTEM")
+        if rollerGuid ~= nil then
+            self:StoreMessage(message, rollerGuid, lineId, event)
         end
     elseif event == "CHAT_MSG_TEXT_EMOTE" then
         local message, _, _, _, _, _, _, _, _, _, lineId, guid = ...
@@ -208,6 +174,10 @@ function Yipper.Events:StoreMessage(message, guid, lineId, event)
     if not Yipper.DB.Messages then
         Yipper.DB.Messages = {}
     end
+
+    -- Learn who this GUID belongs to, so a later /roll - which carries only a
+    -- name - can be attributed back to them.
+    Yipper.Players:Remember(guid)
 
     -- Check if the sender has a record table, might be the first time they're sending
     -- a message.
@@ -292,6 +262,12 @@ function Yipper.Events:UpdateTrackedPlayer()
     -- a target.
     if newTrackedPlayerGuid ~= Yipper.TrackedPlayerGuid then
         Yipper.TrackedPlayerGuid = newTrackedPlayerGuid
+
+        -- Learn whoever we just looked at. A /roll only carries a name, so
+        -- this makes anyone we have hovered or targeted resolvable later on,
+        -- even with no group and no guild in common. Done here rather than in
+        -- the ticker body so it costs nothing while the target is unchanged.
+        Yipper.Players:Remember(newTrackedPlayerGuid)
 
         -- If we have a target or hover, show their messages.
         -- If not, clear the messages.

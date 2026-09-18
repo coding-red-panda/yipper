@@ -1,5 +1,11 @@
 ﻿# Yipper Changelog
 
+## 2.3.0
+
+- Rolls from other players are now attributed locally, without needing them to run Yipper. A roll only tells us a character name, so it is resolved to a GUID from the group or raid roster first - which also gives us the realm of a cross-realm member - then from the guild roster, so a guildmate resolves without sharing a group, and finally from a cache of everyone seen speaking, hovered or targeted in the last 15 minutes.
+- Character names are only unique per realm. When a name resolves to more than one character the roll is not shown at all, rather than being attributed to the wrong person.
+- Removed the addon-to-addon communication entirely. It existed only to share roll results, which are now resolved locally, so Yipper no longer sends or listens for addon messages and no longer needs anyone else to run it.
+
 ## 2.2.2
 
 - Fixed rolls not being shared across a raid. The broadcast channel was picked with GetNumSubgroupMembers(), which only counts your own subgroup and never exceeds 4, so the raid branch was never taken and every roll was sent to PARTY - reaching only your own group of five. The channel is now derived from the group you are actually in (instance, raid or party).
