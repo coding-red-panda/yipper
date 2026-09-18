@@ -1,5 +1,5 @@
 ## Interface: 120100
-## Version: 2.2.2
+## Version: 2.3.0
 ## Title: Yipper
 ## Notes: AddOn to track chat messages from players
 ## Author: Keento
@@ -19,7 +19,7 @@
 
 src/Constants.lua
 src/Utils.lua
-src/Comms.lua
+src/Players.lua
 src/UI.lua
 src/UI.Settings.lua
 src/Minimap.lua

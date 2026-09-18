@@ -8,7 +8,7 @@ local _, Yipper = ...
 Yipper.Constants = {}
 
 -- Track our version in case we need to do something breaking
-Yipper.Constants.VERSION = "2.2.2"
+Yipper.Constants.VERSION = "2.3.0"
 
 -- Define the list of chat events we want to listen to
 Yipper.Constants.ChatEvents = {
@@ -25,7 +25,6 @@ Yipper.Constants.ChatEvents = {
     "CHAT_MSG_SAY",
     "CHAT_MSG_WHISPER",
     "CHAT_MSG_SYSTEM",
-    "CHAT_MSG_ADDON_LOGGED",
     "LOADING_SCREEN_ENABLED",
     "LOADING_SCREEN_DISABLED",
     "PLAYER_REGEN_DISABLED",
@@ -72,6 +71,6 @@ Yipper.Constants.FadedColor = { ["r"] = 169, ["g"] = 169, ["b"] = 169 }
 Yipper.Constants.NotificationColor = { ["r"] = 255, ["g"] = 0, ["b"] = 0 }
 Yipper.Constants.Alpha = 100
 Yipper.Constants.FontSize = 12
-Yipper.Constants.CommsChannel = "YipperComms"
 Yipper.Constants.MessageAgeInSeconds = 300
 Yipper.Constants.RefreshInterval = 100
+Yipper.Constants.PlayerCacheAgeInSeconds = 900
