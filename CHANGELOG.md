@@ -1,5 +1,10 @@
 ﻿# Yipper Changelog
 
+## 2.2.1
+
+- Ignore Discord-relayed guild/officer messages (Patch 12.1 integration). These arrive without a player GUID and cannot be tracked, which previously caused a "table index is nil" error.
+- Harden message storage against messages without a GUID.
+
 ## 2.2.0
 
 - Update time is now configurable
