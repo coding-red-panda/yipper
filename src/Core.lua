@@ -161,7 +161,11 @@ function SlashCmdList.YIPPER(msg, editBox)
         print("Yipper supports the following options:")
         print("help - this explanation")
         print("config - Show the settings page")
+        print("debug - Toggle the temporary roll diagnostics")
         print("no args - toggle the main window")
+    elseif msg == "debug" then
+        Yipper.DB.Debug = not Yipper.DB.Debug
+        print("Yipper debug logging is now " .. (Yipper.DB.Debug and "on" or "off"))
     else
         Yipper.mainFrame:Toggle()
     end

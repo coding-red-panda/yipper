@@ -1,5 +1,13 @@
 ﻿# Yipper Changelog
 
+## 2.2.2
+
+- Fixed rolls not being shared across a raid. The broadcast channel was picked with GetNumSubgroupMembers(), which only counts your own subgroup and never exceeds 4, so the raid branch was never taken and every roll was sent to PARTY - reaching only your own group of five. The channel is now derived from the group you are actually in (instance, raid or party).
+- Roll broadcasts are no longer sent when you are not in a group, where the client discarded them anyway.
+- Hardened parsing of received roll broadcasts: the payload separator is accepted as either "||" or "|", and the sender of the addon message is used as a fallback when neither survives, instead of dropping the roll. The format sent over the wire is unchanged, so 2.2.2 and 2.2.1 clients still understand each other.
+- Added a `/yip debug` toggle that logs the roll send and receive path to the chat frame. Off by default.
+- Note: as with every version change, stored messages are cleared on first login after updating.
+
 ## 2.2.1
 
 - Ignore Discord-relayed guild/officer messages (Patch 12.1 integration). These arrive without a player GUID and cannot be tracked, which previously caused a "table index is nil" error.
