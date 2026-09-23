@@ -46,7 +46,21 @@ end
 -- into guild/officer chat with a nil player GUID and no in-world unit, so they
 -- cannot be hovered, targeted or tracked by Yipper's GUID-based model.
 function Yipper.Utils:IsFromDiscord(discordInfo)
-    return discordInfo ~= nil and discordInfo.fromDiscord == true
+    -- The payload itself can be flagged as a secret, and comparing a secret
+    -- value throws "attempt to compare a secret value (execution tainted)".
+    if self:IsSecret(discordInfo) or discordInfo == nil then
+        return false
+    end
+
+    -- Every field is flagged separately, so the flag can be secret even when
+    -- the table itself is readable. We cannot inspect it, so report "not from
+    -- Discord" and leave the call to StoreMessage: Discord-relayed messages
+    -- carry no player GUID, and those are dropped there already.
+    if self:IsSecret(discordInfo.fromDiscord) then
+        return false
+    end
+
+    return discordInfo.fromDiscord == true
 end
 
 -- Yipper.Utils - IsUpdated

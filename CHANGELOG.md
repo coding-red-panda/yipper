@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.3.1
+
+- Fixed a Lua error on every guild and officer message while execution is tainted (raid combat). The Discord payload that comes with those events is flagged secret field by field, and the check for it compared a secret boolean, which throws. The flag is now only read when it is actually readable; when it is not, the message falls through to the GUID checks, which already drop Discord-relayed chat.
+
 ## 2.3.0
 
 - Rolls from other players are now attributed locally, without needing them to run Yipper. A roll only tells us a character name, so it is resolved to a GUID from the group or raid roster first - which also gives us the realm of a cross-realm member - then from the guild roster, so a guildmate resolves without sharing a group, and finally from a cache of everyone seen speaking, hovered or targeted in the last 15 minutes.
