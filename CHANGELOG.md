@@ -1,5 +1,9 @@
 ﻿# Yipper Changelog
 
+## 2.3.2
+
+- Bump version to match game version
+
 ## 2.3.1
 
 - Fixed a Lua error on every guild and officer message while execution is tainted (raid combat). The Discord payload that comes with those events is flagged secret field by field, and the check for it compared a secret boolean, which throws. The flag is now only read when it is actually readable; when it is not, the message falls through to the GUID checks, which already drop Discord-relayed chat.
